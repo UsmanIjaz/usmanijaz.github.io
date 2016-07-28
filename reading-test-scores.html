@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>READING TEST SCORES</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">usmanijaz </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/projects.html">Projects</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/reading-test-scores.html" rel="bookmark"
+           title="Permalink to READING TEST SCORES">READING TEST SCORES</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-06-13T10:45:00+02:00">
+                Published: Sat 13 June 2015
+        </abbr>
+		<br />
+        <abbr class="modified" title="2015-06-13T21:30:00+02:00">
+                Updated: Sat 13 June 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a>
+        </address>
+<p>In <a href="/category/projects.html">Projects</a>.</p>
+<p>tags: <a href="/tag/linear-regression.html">Linear Regression</a> <a href="/tag/r.html">R</a> <a href="/tag/data-analysis.html">Data Analysis</a> </p>
+</footer><!-- /.post-info -->      <p>The Programme for International Student Assessment (PISA) is a test given every three years to 15-year-old students from around the world to evaluate their performance in mathematics, 
+reading, and science. This test provides a quantitative way to compare the performance of students from different parts of the world. In this homework assignment, 
+we will predict the reading scores of students from the United States of America on the 2009 PISA exam.</p>
+<p>The datasets pisa2009train.csv and pisa2009test.csv contain information about the demographics and schools for American students taking the exam, derived from 2009 PISA Public-Use Data
+ Files distributed by the United States National Center for Education Statistics (NCES). 
+ While the datasets are not supposed to contain identifying information about students taking the test, by using the data we are bound by the NCES data use agreement,
+ which prohibits any attempt to determine the identity of any student in the datasets.</p>
+<p>Each row in the datasets pisa2009train.csv and pisa2009test.csv represents one student taking the exam. The datasets have the following variables:</p>
+<ul>
+<li>
+<p><strong>grade</strong>: The grade in school of the student (most 15-year-olds in America are in 10th grade)</p>
+</li>
+<li>
+<p><strong>male</strong>: Whether the student is male (1/0)</p>
+</li>
+<li>
+<p><strong>raceeth</strong>: The race/ethnicity composite of the student</p>
+</li>
+<li>
+<p><strong>preschool</strong>: Whether the student attended preschool (1/0)</p>
+</li>
+<li>
+<p><strong>expectBachelors</strong>: Whether the student expects to obtain a bachelor's degree (1/0)</p>
+</li>
+<li>
+<p><strong>motherHS</strong>: Whether the student's mother completed high school (1/0)</p>
+</li>
+<li>
+<p><strong>motherBachelors</strong>: Whether the student's mother obtained a bachelor's degree (1/0)</p>
+</li>
+<li>
+<p><strong>motherWork</strong>: Whether the student's mother has part-time or full-time work (1/0)</p>
+</li>
+<li>
+<p><strong>fatherHS</strong>: Whether the student's father completed high school (1/0)</p>
+</li>
+<li>
+<p><strong>fatherBachelors</strong>: Whether the student's father obtained a bachelor's degree (1/0)</p>
+</li>
+<li>
+<p><strong>fatherWork</strong>: Whether the student's father has part-time or full-time work (1/0)</p>
+</li>
+<li>
+<p><strong>selfBornUS</strong>: Whether the student was born in the United States of America (1/0)</p>
+</li>
+<li>
+<p><strong>motherBornUS</strong>: Whether the student's mother was born in the United States of America (1/0)</p>
+</li>
+<li>
+<p><strong>fatherBornUS</strong>: Whether the student's father was born in the United States of America (1/0)</p>
+</li>
+<li>
+<p><strong>englishAtHome</strong>: Whether the student speaks English at home (1/0)</p>
+</li>
+<li>
+<p><strong>computerForSchoolwork</strong>: Whether the student has access to a computer for schoolwork (1/0)</p>
+</li>
+<li>
+<p><strong>read30MinsADay</strong>: Whether the student reads for pleasure for 30 minutes/day (1/0)</p>
+</li>
+<li>
+<p><strong>minutesPerWeekEnglish</strong>: The number of minutes per week the student spend in English class</p>
+</li>
+<li>
+<p><strong>studentsInEnglish</strong>: The number of students in this student's English class at school</p>
+</li>
+<li>
+<p><strong>schoolHasLibrary</strong>: Whether this student's school has a library (1/0)</p>
+</li>
+<li>
+<p><strong>publicSchool</strong>: Whether this student attends a public school (1/0)</p>
+</li>
+<li>
+<p><strong>urban</strong>: Whether this student's school is in an urban area (1/0)</p>
+</li>
+<li>
+<p><strong>schoolSize</strong>: The number of students in this student's school</p>
+</li>
+<li>
+<p><strong>readingScore</strong>: The student's reading score, on a 1000-point scale</p>
+</li>
+</ul>
+<p>The datasets can be loaded with:</p>
+<div class="highlight"><pre><span></span>pisaTrain = read.csv(&quot;pisa2009train.csv&quot;)
+pisaTest = read.csv(&quot;pisa2009test.csv&quot;)
+</pre></div>
+
+
+<p>We can then access the number of rows in the training set with str(pisaTrain) or nrow(pisaTrain) which is <strong>3663</strong>.</p>
+<p>The average reading test score of males is <strong>483.5325</strong> and for females <strong>512.9406</strong> using the following command. </p>
+<div class="highlight"><pre><span></span><span class="x">tapply(pisaTrain</span><span class="p">$</span><span class="nv">readingScore</span><span class="x">, pisaTrain</span><span class="p">$</span><span class="nv">male</span><span class="x">, mean)</span>
+</pre></div>
+
+
+<p>We can read which variables have missing values from summary(pisaTrain). Because most variables are collected from study participants via survey, it is 
+expected that most questions will have at least one missing value.</p>
+<p>Linear regression discards observations with missing data, so we will remove all such observations from the training and testing sets. Later, we will learn about imputation, 
+which deals with missing data by filling in missing values with plausible information.</p>
+<p>By typing the following commands into our R console to remove observations with any missing value from pisaTrain and pisaTest:</p>
+<div class="highlight"><pre><span></span>pisaTrain = na.omit(pisaTrain)
+pisaTest = na.omit(pisaTest)
+</pre></div>
+
+
+<p>After running the provided commands we can use str(pisaTrain) and str(pisaTest), or nrow(pisaTrain) and nrow(pisaTest), to check the new number of rows in the datasets.
+Now we have <strong>2414</strong> observations in the training set and <strong>990</strong> in the testing set. </p>
+<h1>Factor Variables</h1>
+<p>Factor variables are variables that take on a discrete set of values, like the "Region" variable. 
+This is an unordered factor because there isn't any natural ordering between the levels. 
+An ordered factor has a natural ordering between the levels (an example would be the classifications "large," "medium," and "small").   </p>
+<p><strong>Male</strong> only has 2 levels (1 and 0) and is an ordered factor. There is no natural ordering between the different values of <strong>raceeth</strong>, so it is an unordered factor. 
+Meanwhile, we can order <strong>grades</strong> (8, 9, 10, 11, 12), so it is an ordered factor.</p>
+<p>To include unordered factors in a linear regression model, we define one level as the "reference level" and add a binary variable for each of the remaining levels. 
+In this way, a factor with n levels is replaced by n-1 binary variables. The reference level is typically selected to be the most frequently occurring level in the dataset.</p>
+<p>As an example, consider the unordered factor variable "color", with levels "red", "green", and "blue". If "green" were the reference level, then we would add binary variables "colorred"
+ and "colorblue" to a linear regression problem. All red examples would have colorred=1 and colorblue=0. All blue examples would have colorred=0 and colorblue=1.
+ All green examples would have colorred=0 and colorblue=0.</p>
+<p>Now, consider the variable "raceeth" in our problem, which has levels "American Indian/Alaska Native", "Asian", "Black", "Hispanic", "More than one race", 
+"Native Hawaiian/Other Pacific Islander", and "White". Because it is the most common in our population, we will select White as the reference level.</p>
+<p>Considering adding our unordered factor race to the regression model with reference level "White".
+For a student who is Asian, raceethAmerican Indian/Alaska Native, raceethBlack, raceethHispanic, raceethMore than one race and raceethNative Hawaiian/Other Pacific Islander 
+will be set to 0 and raceethAsian  will be set to 1.</p>
+<p>For a student who is white, and "White" is the reference level, a white student will have all raceeth binary variables set to 0.</p>
+<h1>Building a Model</h1>
+<p>Because the race variable takes on text values, it was loaded as a factor variable when we read in the dataset with read.csv() -- 
+we can see this when you run str(pisaTrain) or str(pisaTest). 
+However, by default R selects the first level alphabetically ("American Indian/Alaska Native") as the reference level of our factor instead of the most common level ("White").
+We can set the reference level of the factor by typing the following two lines in your R console:</p>
+<div class="highlight"><pre><span></span><span class="x">pisaTrain</span><span class="p">$</span><span class="nv">raceeth</span><span class="x"> = relevel(pisaTrain</span><span class="p">$</span><span class="nv">raceeth</span><span class="x">, &quot;White&quot;)</span>
+<span class="x">pisaTest</span><span class="p">$</span><span class="nv">raceeth</span><span class="x"> = relevel(pisaTest</span><span class="p">$</span><span class="nv">raceeth</span><span class="x">, &quot;White&quot;)</span>
+</pre></div>
+
+
+<p>Now, we build a linear regression model (call it lmScore) using the training set to predict readingScore using all the remaining variables.</p>
+<p>It would be time-consuming to type all the variables, but R provides the shorthand notation "readingScore ~ ." to mean 
+"predict readingScore using all the other variables in the data frame." 
+The period is used to replace listing out all of the independent variables. 
+As an example, if your dependent variable is called "Y", your independent variables are called "X1", "X2", and "X3", and your training data set is called "Train",
+ instead of the regular notation:</p>
+<div class="highlight"><pre><span></span>LinReg = lm(Y ~ X1 + X2 + X3, data = Train)
+</pre></div>
+
+
+<p>We would use the following command to build your model:</p>
+<div class="highlight"><pre><span></span>lmScore = lm(readingScore~., data=pisaTrain)
+</pre></div>
+
+
+<p>We can then read the training set R^2 from the "Multiple R-squared" value of summary(lmScore) which is <strong>0.3251</strong>.</p>
+<p>For the training set RMSE:</p>
+<p>The training-set RMSE can be computed by first computing the SSE:</p>
+<div class="highlight"><pre><span></span><span class="x">SSE = sum(lmScore</span><span class="p">$</span><span class="nv">residuals</span><span class="x">^2)</span>
+</pre></div>
+
+
+<p>and then dividing by the number of observations and taking the square root:</p>
+<div class="highlight"><pre><span></span>RMSE = sqrt(SSE / nrow(pisaTrain))
+</pre></div>
+
+
+<p>A alternative way of getting this answer would be with the following command:</p>
+<div class="highlight"><pre><span></span><span class="x">sqrt(mean(lmScore</span><span class="p">$</span><span class="nv">residuals</span><span class="x">^2)).</span>
+</pre></div>
+
+
+<p>The training set RMSE is <strong>73.36555</strong>.</p>
+<p>Consider two students A and B. They have all variable values the same, except that student A is in grade 11 and student B is in grade 9. 
+The coefficient 29.54 on grade is the difference in reading score between two students who are identical other than having a difference in grade of 1. 
+Because A and B have a difference in grade of 2, the model predicts that student A has a reading score that is <strong>2*29.54 larger</strong>.</p>
+<p>Also, The only difference between an Asian student and white student with otherwise identical variables is that the former has raceethAsian=1 and the latter has raceethAsian=0.
+ The predicted reading score for these two students will differ by the coefficient on the variable raceethAsian.</p>
+<p>About the significance of variables in the model, From summary(lmScore), we can see which variables were significant at the 0.05 level. 
+Because several of the binary variables generated from the race factor variable are significant, we should not remove this variable. </p>
+<p>Using the "predict" function and supplying the "newdata" argument, we use the lmScore model to predict the reading scores of students in pisaTest.
+We call this vector of predictions "predTest". </p>
+<div class="highlight"><pre><span></span>predTest = predict(lmScore, newdata=pisaTest)
+</pre></div>
+
+
+<p>From summary(predTest), we see that the maximum predicted reading score is <strong>637.7</strong>, and the minimum predicted score is <strong>353.2</strong>. Therefore, the range is <strong>284.5</strong>.</p>
+<p>The sum of squared errors (SSE) of lmScore on the testing set is <strong>5762082</strong> and the root-mean squared error (RMSE) of lmScore on the testing set is <strong>76.29079</strong>.</p>
+<div class="highlight"><pre><span></span><span class="x"> sum((predTest-pisaTest</span><span class="p">$</span><span class="nv">readingScore</span><span class="x">)^2)</span>
+<span class="x"> sqrt(mean((predTest-pisaTest</span><span class="p">$</span><span class="nv">readingScore</span><span class="x">)^2))</span>
+</pre></div>
+
+
+<p>The predicted test score used in the baseline model is <strong>517.9629</strong> and can be computed as:</p>
+<div class="highlight"><pre><span></span><span class="x">baseline = mean(pisaTrain</span><span class="p">$</span><span class="nv">readingScore</span><span class="x">)</span>
+</pre></div>
+
+
+<p>The sum of squared errors of the baseline model on the testing set which is also called the total sum of squares (SST) is <strong>7802354</strong> and can be computed as:</p>
+<div class="highlight"><pre><span></span><span class="x">sum((baseline-pisaTest</span><span class="p">$</span><span class="nv">readingScore</span><span class="x">)^2).</span>
+</pre></div>
+
+
+<p>The test-set R-squared value of lmScore is <strong>0.2614944</strong></p>
+<p>The test-set R^2 is defined as <strong>1-SSE/SST</strong>, where SSE is the sum of squared errors of the model on the test set and SST is the sum of squared errors of the baseline model. 
+For this model, the R^2 is then computed to be <strong>1-5762082/7802354</strong>.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

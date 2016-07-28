@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>STOCK DYNAMICS</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">usmanijaz </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/projects.html">Projects</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/stock-dynamics.html" rel="bookmark"
+           title="Permalink to STOCK DYNAMICS">STOCK DYNAMICS</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-06-04T09:20:00+02:00">
+                Published: Thu 04 June 2015
+        </abbr>
+		<br />
+        <abbr class="modified" title="2015-06-04T09:30:00+02:00">
+                Updated: Thu 04 June 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a>
+        </address>
+<p>In <a href="/category/projects.html">Projects</a>.</p>
+<p>tags: <a href="/tag/r.html">R</a> <a href="/tag/data-analysis.html">Data Analysis</a> </p>
+</footer><!-- /.post-info -->      <p>A stock market is where buyers and sellers trade shares of a company, and is one of the most popular ways for individuals and companies to invest money. The size of the world stock market  is now estimated to be in the trillions.
+The largest stock market in the world is the New York Stock Exchange (NYSE), located in New York City. 
+About 2,800 companies are listed on the NSYE. 
+Today, we'll look at the monthly stock prices of five of these companies: IBM, General Electric (GE), Procter and Gamble, Coca Cola, and Boeing. 
+The data used in this problem comes from Infochimps.</p>
+<p>Download and read the following files into R, using the read.csv function: IBMStock.csv, GEStock.csv, ProcterGambleStock.csv, CocaColaStock.csv, and BoeingStock.csv.</p>
+<p>We will call the data frames "IBM", "GE", "ProcterGamble", "CocaCola", and "Boeing", respectively. Each data frame has two variables, described as follows:</p>
+<ul>
+<li><strong>Date</strong>: the date of the stock price, always given as the first of the month.</li>
+<li><strong>StockPrice</strong>: the average stock price of the company in the given month.</li>
+</ul>
+<p>We'll take a look at how the stock dynamics of these companies have changed over time.</p>
+<p>First we read the data from the csv files.
+    IBM = read.csv("IBMStock.csv")
+    GE = read.csv("GEStock.csv")
+    CocaCola = read.csv("CocaColaStock.csv")
+    ProcterGamble = read.csv("ProcterGambleStock.csv")
+    Boeing = read.csv("BoeingStock.csv")</p>
+<p>Before working with these data sets, we need to convert the dates into a format that R can understand.
+Take a look at the structure of one of the datasets using the str function. Right now, the date variable is stored as a factor.
+We can convert this to a "Date" object in R by using the following five commands (one for each data set):</p>
+<div class="highlight"><pre><span></span><span class="x">IBM</span><span class="p">$</span><span class="nv">Date</span><span class="x"> = as.Date(IBM</span><span class="p">$</span><span class="nv">Date</span><span class="x">, &quot;%m/%d/%y&quot;)</span>
+<span class="x">GE</span><span class="p">$</span><span class="nv">Date</span><span class="x"> = as.Date(GE</span><span class="p">$</span><span class="nv">Date</span><span class="x">, &quot;%m/%d/%y&quot;)</span>
+<span class="x">CocaCola</span><span class="p">$</span><span class="nv">Date</span><span class="x"> = as.Date(CocaCola</span><span class="p">$</span><span class="nv">Date</span><span class="x">, &quot;%m/%d/%y&quot;)</span>
+<span class="x">ProcterGamble</span><span class="p">$</span><span class="nv">Date</span><span class="x"> = as.Date(ProcterGamble</span><span class="p">$</span><span class="nv">Date</span><span class="x">, &quot;%m/%d/%y&quot;)</span>
+<span class="x">Boeing</span><span class="p">$</span><span class="nv">Date</span><span class="x"> = as.Date(Boeing</span><span class="p">$</span><span class="nv">Date</span><span class="x">, &quot;%m/%d/%y&quot;)</span>
+</pre></div>
+
+
+<p>Using the str function, we can see that each data set has 480 observations.
+We have monthly data for 40 years, so there are 12*40 = 480 observations.</p>
+<p>Using the summary function, the minimum value of the Date variable is January 1, 1970 for any dataset and 
+the maximum value of the Date variable is December 1, 2009 for any dataset.</p>
+<p>We can also find the minimum, maximum, mean and median prices of the different stocks. </p>
+<div class="highlight"><pre><span></span><span class="x">summary(IBM</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">)</span>
+<span class="x">summary(GE</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">)</span>
+<span class="x">summary(CocaCola</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">)</span>
+<span class="x">summary(Boeing</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">)</span>
+<span class="x">summary(ProcterGamble</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">)</span>
+</pre></div>
+
+
+<p>For finding the standard deviation we can use:<br />
+    sd(ProcterGamble$StockPrice)</p>
+<h1>Visualizing Stock Dynamics</h1>
+<p>Let's plot the stock prices to see if we can visualize trends in stock prices during this time period. 
+Using the plot function, we will plot the Date on the x-axis and the StockPrice on the y-axis, for Coca-Cola.
+Now, let's add the line for Procter &amp; Gamble too.
+We can add a line to a plot in R by using the lines function instead of the plot function. Keeping the plot for Coca-Cola open.</p>
+<div class="highlight"><pre><span></span><span class="x">plot(CocaCola</span><span class="p">$</span><span class="nv">Date</span><span class="x">,CocaCola</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">,type=&#39;l&#39;,col=&quot;red&quot;)</span>
+<span class="x">lines(ProcterGamble</span><span class="p">$</span><span class="nv">Date</span><span class="x">,ProcterGamble</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">,col=&quot;blue&quot;,lty=2)</span>
+<span class="x">abline(v=as.Date(c(&quot;2000-03-01&quot;)), lwd=2)</span>
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/RplotStocks.png" style="float: middle; width: 450px;">  </p>
+<p>Looking at the plot, the maximum value of the StockPrice is around 1973, and the minimum value of the StockPrice is around 1980.
+In March of 2000, the technology bubble burst, and a stock market crash occurred.
+Looking at the plot, around 2000 both stocks drop, but Procter and Gamble's stock drops more.</p>
+<p>We can see that around 1983 the stock for Coca-Cola has an upward trend. </p>
+<h1>Visualizing Stock Dynamics 1995-2005</h1>
+<p>Let's take a look at how the stock prices changed from 1995-2005 for all five companies. 
+In our R console, start by typing the following plot command:</p>
+<div class="highlight"><pre><span></span><span class="x">plot(CocaCola</span><span class="p">$</span><span class="nv">Date</span><span class="x">[301:432], CocaCola</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">[301:432], type=&quot;l&quot;, col=&quot;red&quot;, ylim=c(0,210))</span>
+</pre></div>
+
+
+<p>This will plot the CocaCola stock prices from 1995 through 2005, which are the observations numbered from 301 to 432. 
+The additional argument, ylim=c(0,210), makes the y-axis range from 0 to 210. 
+This will allow us to see all of the stock values when we add in the other companies.</p>
+<p>Now, we use the lines function to add in the other four companies, remembering to only plot the observations from 1995 to 2005,
+ or [301:432]. We don't need the "type" or "ylim" arguments for the lines function, but remember to make each company a 
+ different color so that you can tell them apart. Some color options are "red", "blue", "green", "purple", "orange", and "black". 
+ To see all of the color options in R, type colors() in your R console.</p>
+<div class="highlight"><pre><span></span><span class="x">plot(CocaCola</span><span class="p">$</span><span class="nv">Date</span><span class="x">[301:432], CocaCola</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">[301:432], type=&quot;l&quot;, col=&quot;red&quot;, ylim=c(0,210))</span>
+<span class="x">lines(ProcterGamble</span><span class="p">$</span><span class="nv">Date</span><span class="x">[301:432],ProcterGamble</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">[301:432],col=&quot;blue&quot;,lty=2)</span>
+<span class="x">lines(GE</span><span class="p">$</span><span class="nv">Date</span><span class="x">[301:432],GE</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">[301:432],col=&quot;green&quot;,lty=3)</span>
+<span class="x">lines(Boeing</span><span class="p">$</span><span class="nv">Date</span><span class="x">[301:432],Boeing</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">[301:432],col=&quot;yellow&quot;,lty=4)</span>
+<span class="x">lines(IBM</span><span class="p">$</span><span class="nv">Date</span><span class="x">[301:432],IBM</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">[301:432],col=&quot;orange&quot;,lty=5)</span>
+<span class="x">abline(v=as.Date(c(&quot;1997-09-01&quot;)), lwd=2)</span>
+<span class="x">abline(v=as.Date(c(&quot;1997-11-01&quot;)), lwd=2)</span>
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/Rplot2002.png" style="float: middle; width: 800px;">    </p>
+<p>By looking at this plot, you can see that the stock for General Electric falls significantly more than the other stocks after the technology bubble burst.<br />
+In 1995-2002, we can see that IBM has the highest value, around 1999.</p>
+<p>In October of 1997, there was a global stock market crash that was caused by an economic crisis in Asia. 
+Looking at the plot, two companies had a decreasing trend in stock prices from September 1997 to November 1997: Boeing and Procter &amp; Gamble.</p>
+<p>We can also see that Boeing is steadily increasing from 2004 to the beginning of 2006.</p>
+<h1>Monthly Trends</h1>
+<p>Lastly, let's see if stocks tend to be higher or lower during certain months. 
+The overall average stock price for IBM is <strong>144.375</strong>, which can be computed using the command:    </p>
+<div class="highlight"><pre><span></span><span class="x">mean(IBM</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">)</span>
+</pre></div>
+
+
+<p>Comparing the monthly averages to this, using the command </p>
+<div class="highlight"><pre><span></span><span class="x">tapply(IBM</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">, months(IBM</span><span class="p">$</span><span class="nv">Date</span><span class="x">), mean),</span>
+</pre></div>
+
+
+<p>we can see that the price has historically been higher than average during January - May, and lower than average during the remaining months.
+We can see the monthly average stock prices for GE and Coca-Cola by using the commands:</p>
+<div class="highlight"><pre><span></span><span class="x">tapply(GE</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">, months(GE</span><span class="p">$</span><span class="nv">Date</span><span class="x">), mean)</span>
+<span class="x">tapply(CocaCola</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">, months(CocaCola</span><span class="p">$</span><span class="nv">Date</span><span class="x">), mean)</span>
+</pre></div>
+
+
+<p>General Electric has an average stock price of <strong>64.48</strong> in April, which is higher than any other month. 
+Coca-Cola has an average stock price of <strong>62.69</strong> in April, which is higher than any other month.</p>
+<p>IBM has an average price of 140.76 in December, and 150.24 in January, which can be seen with the command:</p>
+<div class="highlight"><pre><span></span><span class="x">tapply(IBM</span><span class="p">$</span><span class="nv">StockPrice</span><span class="x">, months(IBM</span><span class="p">$</span><span class="nv">Date</span><span class="x">), mean)</span>
+</pre></div>
+
+
+<p>Having lower stock prices in December is a trend that holds for all five companies.</p>
+<p>After seeing these trends, we are ready to buy stock in certain months and sell it in others! But, we should be careful, 
+because one really good or really bad year could skew the average to show a trend that is not really there in general.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

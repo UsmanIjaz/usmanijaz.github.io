@@ -15,7 +15,6 @@
                 <h1><a href="/">usmanijaz </a></h1>
                 <nav><ul>
                     <li class="active"><a href="/category/projects.html">Projects</a></li>
-                    <li><a href="/category/review.html">Review</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
@@ -28,12 +27,12 @@
 
     <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-12-03T10:20:00+01:00">
-                Published: Wed 03 December 2014
+        <abbr class="published" title="2015-06-03T10:20:00+02:00">
+                Published: Wed 03 June 2015
         </abbr>
 		<br />
-        <abbr class="modified" title="2010-12-05T19:30:00+01:00">
-                Updated: Sun 05 December 2010
+        <abbr class="modified" title="2015-06-03T19:30:00+02:00">
+                Updated: Wed 03 June 2015
         </abbr>
 
         <address class="vcard author">
@@ -43,7 +42,7 @@
 <p>tags: <a href="/tag/r.html">R</a> <a href="/tag/data-analysis.html">Data Analysis</a> </p>
 </footer><!-- /.post-info -->      <p>Crime is an international concern, but it is documented and handled in very different ways in different countries. In the United States, violent crimes and property crimes are recorded by the Federal Bureau of Investigation (FBI).  Additionally, each city documents crime, and some cities release data regarding crime rates. The city of Chicago, Illinois releases crime data from 2001 onward online.</p>
 <p>Chicago is the third most populous city in the United States, with a population of over 2.7 million people. The city of Chicago is shown in the map below, with the state of Illinois highlighted in red. </p>
-<p><img alt="Photo" src="images/ChicagoMap.png" /></p>
+<p><img alt="Photo" src="../images/ChicagoMap.png" style="float: middle; width: 450px;"></p>
 <p>There are two main types of crimes: violent crimes, and property crimes. In this problem, we'll focus on one specific type of property crime, called "motor vehicle theft" (sometimes referred to as grand theft auto). This is the act of stealing, or attempting to steal, a car. In this problem, we'll use some basic data analysis in R to understand the motor vehicle thefts in Chicago. </p>
 <p>Please download the file mvtWeek1.csv for this problem (do not open this file in any spreadsheet software before completing this problem because it might change the format of the Date field).</p>
 <div class="highlight"><pre><span></span>mvt = read.csv(&quot;mvtWeek1.csv&quot;)
@@ -84,6 +83,7 @@ str(mvt)
 </pre></div>
 
 
+<h1>Understanding Dates in R</h1>
 <p>In many datasets, like this one, you have a date field. Unfortunately, R does not automatically recognize entries that look like dates. We need to use a function in R to extract the date and time. If we type </p>
 <div class="highlight"><pre><span></span><span class="x">mvt</span><span class="p">$</span><span class="nv">Date</span><span class="x">[1]</span>
 </pre></div>
@@ -94,7 +94,102 @@ str(mvt)
 </pre></div>
 
 
-<p>This converts the variable "Date" into a Date object in R.</p>
+<p>This converts the variable "Date" into a Date object in R.
+Now, let's extract the month and the day of the week, and add these variables to our data frame mvt. We can do this with two simple functions by typing the following commands in R:</p>
+<div class="highlight"><pre><span></span><span class="x">mvt</span><span class="p">$</span><span class="nv">Month</span><span class="x"> = months(DateConvert)</span>
+<span class="x">mvt</span><span class="p">$</span><span class="nv">Weekday</span><span class="x"> = weekdays(DateConvert)</span>
+</pre></div>
+
+
+<p>This creates two new variables in our data frame, Month and Weekday, and sets them equal to the month and weekday values that we can extract from the Date object. Lastly, replace the old Date variable with DateConvert by typing:</p>
+<div class="highlight"><pre><span></span><span class="x">mvt</span><span class="p">$</span><span class="nv">Date</span><span class="x"> = DateConvert</span>
+</pre></div>
+
+
+<p>If we type</p>
+<div class="highlight"><pre><span></span><span class="x">table(mvt</span><span class="p">$</span><span class="nv">Month</span><span class="x">)</span>
+</pre></div>
+
+
+<p>we can see that the month with the smallest number of observations is <strong>February</strong>. If we type </p>
+<div class="highlight"><pre><span></span><span class="x">table(mvt</span><span class="p">$</span><span class="nv">Weekday</span><span class="x">)</span>
+</pre></div>
+
+
+<p>we can see that the weekday with the largest number of observations is <strong>Friday</strong>.
+Each observation in the dataset represents a motor vehicle theft, and the Arrest variable indicates whether an arrest was later made for this theft. If we type </p>
+<div class="highlight"><pre><span></span><span class="x">table(mvt</span><span class="p">$</span><span class="nv">Arrest</span><span class="x">,mvt</span><span class="p">$</span><span class="nv">Month</span><span class="x">)</span>
+</pre></div>
+
+
+<p>we can see that the largest number of observations with Arrest=TRUE occurs in the month of <strong>January</strong>.</p>
+<p>Now, let's make some plots to help us better understand how crime has changed over time in Chicago. Throughout this problem, and in general, you can save your plot to a file. </p>
+<h1>Visualizing Crime Trends</h1>
+<p>First, let's make a histogram of the variable Date. We'll add an extra argument, to specify the number of bars we want in our histogram. In our R console, type:</p>
+<div class="highlight"><pre><span></span><span class="x">hist(mvt</span><span class="p">$</span><span class="nv">Date</span><span class="x">, breaks=100)</span>
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/RplotChicago.png" style="float: middle; width: 450px;"></p>
+<p>Looking at the histogram, it looks like crime generally decreases from 2002 - 2012. From 2005 - 2008, there is a clear downward trend in crime. From 2009 - 2011, there is a clear upward trend in crime.</p>
+<p>Now, let's see how arrests have changed over time. Create a boxplot of the variable "Date", sorted by the variable "Arrest". In a boxplot, the bold horizontal line is the median value of the data, the box shows the range of values between the first quartile and third quartile, and the whiskers (the dotted lines extending outside the box) show the minimum and maximum values, excluding any outliers (which are plotted as circles). Outliers are defined by first computing the difference between the first and third quartile values, or the height of the box. This number is called the Inter-Quartile Range (IQR). Any point that is greater than the third quartile plus the IQR or less than the first quartile minus the IQR is considered an outlier.</p>
+<div class="highlight"><pre><span></span><span class="x"> boxplot(mvt</span><span class="p">$</span><span class="nv">Date</span><span class="x"> ~ mvt</span><span class="p">$</span><span class="nv">Arrest</span><span class="x">)</span>
+</pre></div>
+
+
+<p>If we look at the boxplot, the one for Arrest=TRUE is definitely skewed towards the bottom of the plot, meaning that there were more crimes for which arrests were made in the first half of the time period.</p>
+<p><img alt="Photo" src="../images/boxplotChicago.png" style="float: middle; width: 450px;"></p>
+<p>If we create a table using the command </p>
+<div class="highlight"><pre><span></span><span class="x">table(mvt</span><span class="p">$</span><span class="nv">Arrest</span><span class="x">, mvt</span><span class="p">$</span><span class="nv">Year</span><span class="x">)</span>
+</pre></div>
+
+
+<ul>
+<li>The column for 2001 has 2152 observations with Arrest=TRUE and 18517 observations with Arrest=FALSE. The fraction of motor vehicle thefts in 2001 for which an arrest was made is thus 2152/(2152+18517) = <strong>0.1041173</strong>. </li>
+<li>The column for 2007 has 1212 observations with Arrest=TRUE and 13068 observations with Arrest=FALSE. The fraction of motor vehicle thefts in 2007 for which an arrest was made is thus 1212/(1212+13068) = <strong>0.08487395</strong>.</li>
+<li>The column for 2012 has 550 observations with Arrest=TRUE and 13542 observations with Arrest=FALSE. The fraction of motor vehicle thefts in 2012 for which an arrest was made is thus 550/(550+13542) = <strong>0.03902924</strong>. Since there may still be open investigations for recent crimes, this could explain the trend we are seeing in the data. There could also be other factors at play, and this trend should be investigated further. However, since we don't know when the arrests were actually made, our detective work in this area has reached a dead end.</li>
+</ul>
+<h1>Popular Locations</h1>
+<p>Analyzing this data could be useful to the Chicago Police Department when deciding where to allocate resources. If they want to increase the number of arrests that are made for motor vehicle thefts, where should they focus their efforts?</p>
+<p>Let's find the top five locations where motor vehicle thefts occur. If we create a table of the LocationDescription variable, it is unfortunately very hard to read since there are 78 different locations in the data set. By using the sort function, we can view this same table, but sorted by the number of observations in each category. In your R console, type:</p>
+<div class="highlight"><pre><span></span><span class="x">sort(table(mvt</span><span class="p">$</span><span class="nv">LocationDescription</span><span class="x">))</span>
+</pre></div>
+
+
+<p>The locations with the largest number of motor vehicle thefts are <strong>Street, Parking Lot/Garage (Non. Resid.), Alley, Gas Station, and Driveway - Residential</strong>.</p>
+<p>Let's create a subset of our data, only taking observations for which the theft happened in one of these five locations, and call this new data set "Top5". To do this, we can use the | symbol. This is also called a logical "or" operation.
+Alternately, we could create five different subsets, and then merge them together into one data frame using rbind.</p>
+<div class="highlight"><pre><span></span>Top5 = subset(mvt, LocationDescription==&quot;STREET&quot; | LocationDescription==&quot;PARKING LOT/GARAGE(NON.RESID.)&quot; | LocationDescription==&quot;ALLEY&quot; | LocationDescription==&quot;GAS STATION&quot; | LocationDescription==&quot;DRIVEWAY - RESIDENTIAL&quot;)
+</pre></div>
+
+
+<p>If we look at the structure of this data frame with str(Top5), we can see that there are <strong>177510</strong> observations.</p>
+<p>Another way of doing this would be to use the %in% operator in R. This operator checks for inclusion in a set. We can create the same subset by typing the following two lines in your R console:</p>
+<div class="highlight"><pre><span></span>TopLocations = c(&quot;STREET&quot;, &quot;PARKING LOT/GARAGE(NON.RESID.)&quot;, &quot;ALLEY&quot;, &quot;GAS STATION&quot;, &quot;DRIVEWAY - RESIDENTIAL&quot;)
+Top5 = subset(mvt, LocationDescription %in% TopLocations)
+</pre></div>
+
+
+<p>R will remember the other categories of the LocationDescription variable from the original dataset, so running table(Top5$LocationDescription) will have a lot of unnecessary output. To make our tables a bit nicer to read, we can refresh this factor variable. In your R console, type:</p>
+<div class="highlight"><pre><span></span><span class="x">Top5</span><span class="p">$</span><span class="nv">LocationDescription</span><span class="x"> = factor(Top5</span><span class="p">$</span><span class="nv">LocationDescription</span><span class="x">)</span>
+</pre></div>
+
+
+<p>If we run the str or table function on Top5 now, we should see that LocationDescription now only has 5 values, as we expect. </p>
+<p>If we create a table of LocationDescription compared to Arrest, </p>
+<div class="highlight"><pre><span></span><span class="x">table(Top5</span><span class="p">$</span><span class="nv">LocationDescription</span><span class="x">, Top5</span><span class="p">$</span><span class="nv">Arrest</span><span class="x">)</span>
+</pre></div>
+
+
+<p>we can then compute the fraction of motor vehicle thefts that resulted in arrests at each location. Gas Station has by far the highest percentage of arrests, with over 20% of motor vehicle thefts resulting in an arrest.</p>
+<p>On <strong>Saturday</strong> the most motor vehicle thefts at gas stations happen. This can be read from </p>
+<div class="highlight"><pre><span></span><span class="x">table(Top5</span><span class="p">$</span><span class="nv">LocationDescription</span><span class="x">, Top5</span><span class="p">$</span><span class="nv">Weekday</span><span class="x">).</span>
+</pre></div>
+
+
+<p>Also, <strong>Saturday</strong> is the day of the week with the fewest motor vehicle thefts in residential driveways.</p>
+<div class="highlight"><pre><span></span><span class="x">table(Top5</span><span class="p">$</span><span class="nv">LocationDescription</span><span class="x">, Top5</span><span class="p">$</span><span class="nv">Weekday</span><span class="x">)</span>
+</pre></div>
     </div><!-- /.entry-content -->
 
   </article>

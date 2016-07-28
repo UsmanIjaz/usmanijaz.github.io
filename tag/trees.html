@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>usmanijaz - Trees</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">usmanijaz </a></h1>
+                <nav><ul>
+                    <li><a href="/category/projects.html">Projects</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/letter-recognition.html">LETTER RECOGNITION</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2015-06-20T10:45:00+02:00">
+                Published: Sat 20 June 2015
+        </abbr>
+		<br />
+        <abbr class="modified" title="2015-06-20T21:30:00+02:00">
+                Updated: Sat 20 June 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a>
+        </address>
+<p>In <a href="/category/projects.html">Projects</a>.</p>
+<p>tags: <a href="/tag/forest.html">Forest</a> <a href="/tag/trees.html">Trees</a> <a href="/tag/r.html">R</a> <a href="/tag/data-analysis.html">Data Analysis</a> <a href="/tag/catools-package.html">caTools Package</a> <a href="/tag/rocr-package.html">ROCR package</a> <a href="/tag/rpart-package.html">rpart Package</a> </p>
+</footer><!-- /.post-info --><p>One of the earliest applications of the predictive analytics methods was to automatically recognize letters, which post office machines use to sort mail.
+In this problem, we will build a model that uses statistics of images of four letters in the Roman alphabet -- A, B, P, and R -- to predict which letter a 
+particular image corresponds to.</p>
+<p>This is a multiclass classification problem. We have mostly focused on binary classification problems (e.g., predicting whether an 
+individual voted or not, whether or not a person is at risk for a certain disease, etc.). In this problem, we have more than two classifications
+ that are possible for each observation. </p>
+<p>The file letters_ABPR.csv contains 3116 observations, each of which corresponds to a certain image of one of the four letters A, B, P and R. 
+The images came from 20 different fonts, which were then randomly distorted to produce the final images; each such distorted image is represented as a 
+collection of pixels, each of which is "on" or "off". For each such distorted image, we have available certain statistics of the image in terms of these pixels,
+ as well as which of the four letters the image is. This data comes from the UCI Machine Learning Repository.</p>
+<p>This dataset contains the following 17 variables:</p>
+<ul>
+<li><strong>letter</strong> = the letter that the image corresponds to (A, B, P or R)</li>
+<li><strong>xbox</strong> = the horizontal position of where the smallest box covering the letter shape begins.</li>
+<li><strong>ybox</strong> = the vertical position of where the smallest box covering the letter shape begins.</li>
+<li><strong>width</strong> = the width of this smallest box.</li>
+<li><strong>height</strong> = the height of this smallest box.</li>
+<li><strong>onpix</strong> = the total number of "on" pixels in the character image</li>
+<li><strong>xbar</strong> = the mean horizontal position of all of the "on" pixels</li>
+<li><strong>ybar</strong> = the mean vertical position of all of the "on" pixels</li>
+<li><strong>x2bar</strong> = the mean squared horizontal position of all of the "on" pixels in the image</li>
+<li><strong>y2bar</strong> = the mean squared vertical position of all of the "on" pixels in the image</li>
+<li><strong>xybar</strong> = the mean of the product of the horizontal and vertical position of all of the "on" pixels in the image</li>
+<li><strong>x2ybar</strong> = the mean of the product of the squared horizontal position and the vertical position of all of the "on" pixels</li>
+<li><strong>xy2bar</strong> = the mean of the product of the horizontal position and the squared vertical position of all of the "on" pixels</li>
+<li><strong>xedge</strong> = the mean number of edges (the number of times an "off" pixel is followed by an "on" pixel, or the image boundary is hit) as the image is scanned from left to right, along the whole vertical length of the image</li>
+<li><strong>xedgeycor</strong> = the mean of the product of the number of horizontal edges at each vertical position and the vertical position</li>
+<li><strong>yedge</strong> = the mean number of edges as the images is scanned from top to bottom, along the whole horizontal length of the image</li>
+<li><strong>yedgexcor</strong> = the mean of the product of the number of vertical edges at each horizontal position and the horizontal position</li>
+</ul>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/understanding-why-people-vote.html" rel="bookmark"
+                           title="Permalink to UNDERSTANDING WHY PEOPLE VOTE">UNDERSTANDING WHY PEOPLE VOTE</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-06-19T10:45:00+02:00">
+                Published: Fri 19 June 2015
+        </abbr>
+		<br />
+        <abbr class="modified" title="2015-06-19T21:30:00+02:00">
+                Updated: Fri 19 June 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a>
+        </address>
+<p>In <a href="/category/projects.html">Projects</a>.</p>
+<p>tags: <a href="/tag/trees.html">Trees</a> <a href="/tag/r.html">R</a> <a href="/tag/data-analysis.html">Data Analysis</a> <a href="/tag/catools-package.html">caTools Package</a> <a href="/tag/rocr-package.html">ROCR package</a> <a href="/tag/rpart-package.html">rpart Package</a> </p>
+</footer><!-- /.post-info -->                <p>In August 2006 three researchers (Alan Gerber and Donald Green of Yale University, and Christopher Larimer of the University of Northern Iowa) carried 
+out a large scale field experiment in Michigan, USA to test the hypothesis that one of the reasons people vote is social, or extrinsic, pressure. 
+To quote ...</p>
+                <a class="readmore" href="/understanding-why-people-vote.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
