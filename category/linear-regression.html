@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>usmanijaz - Linear Regression</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">usmanijaz </a></h1>
+                <nav><ul>
+                </ul>
+                </nav>
+<div id="submenu">
+                    <ul>
+                            <li><a href="/category/data-analysis.html">Data Analysis</a></li>
+                            <li class="active"><a href="/category/linear-regression.html">Linear Regression</a></li>
+                            <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
+                            <li><a href="/category/text-analysis.html">Text Analysis</a></li>
+                            <li><a href="/category/trees.html">Trees</a></li>
+                    </ul>
+                <div>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/detecting-flu-epidemics-via-search-engine-query-data.html">DETECTING FLU EPIDEMICS VIA SEARCH ENGINE QUERY DATA</a></h1>
+<footer class="post-info">
+        <span>Mon 15 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/linear-regression.html">Linear Regression</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info --><p>Flu epidemics constitute a major public health concern causing respiratory illnesses, hospitalizations, and deaths. According to the National Vital Statistics Reports published in October
+ 2012, influenza ranked as the eighth leading cause of death in 2011 in the United States. Each year, 250,000 to 500,000 deaths are attributed to influenza related diseases throughout 
+ the world.</p>
+<p>The U.S. Centers for Disease Control and Prevention (CDC) and the European Influenza Surveillance Scheme (EISS) detect influenza activity through virologic and clinical data, 
+including Influenza-like Illness (ILI) physician visits. Reporting national and regional data, however, are published with a 1-2 week lag.</p>
+<p>The Google Flu Trends project was initiated to see if faster reporting can be made possible by considering flu-related online search queries -- data that is available almost immediately.</p>
+<p>We would like to estimate influenza-like illness (ILI) activity using Google web search logs. Fortunately, one can easily access this data online:
+ILI Data - The CDC publishes on its website the official regional and state-level percentage of patient visits to healthcare providers for ILI purposes on a weekly basis.
+Google Search Queries - Google Trends allows public retrieval of weekly counts for every query searched by users around the world. For each location, the counts are normalized by dividing 
+the count for each query in a particular week by the total number of online search queries submitted in that location during the week. Then, the values are adjusted to be between 0 and 1.</p>
+<p>The csv file FluTrain.csv aggregates this data from January 1, 2004 until December 31, 2011 as follows:</p>
+<ul>
+<li>
+<p><strong>"Week"</strong> - The range of dates represented by this observation, in year/month/day format.</p>
+</li>
+<li>
+<p><strong>"ILI"</strong> - This column lists the percentage of ILI-related physician visits for the corresponding week.</p>
+</li>
+<li>
+<p><strong>"Queries"</strong> - This column lists the fraction of queries that are ILI-related for the corresponding week, adjusted to be between 0 and 1 (higher values correspond to
+ more ILI-related search queries).</p>
+</li>
+</ul>
+<p>Before applying analytics tools on the training set, we first need to understand the data at hand. Let's load "FluTrain.csv" into a data frame called FluTrain.</p>
+<p>Looking at the time period 2004-2011, let's find out which week corresponds to the highest percentage of ILI-related physician visits. 
+We can use <strong>which.max(FluTrain$ILI)</strong> to find the row number corresponding to the observation with the maximum value of ILI, which is <strong>303</strong>. Then, we can output the corresponding week using</p>
+<div class="highlight"><pre><span></span><span class="x">which.max(FluTrain</span><span class="p">$</span><span class="nv">ILI</span><span class="x">)</span>
+<span class="x">FluTrain</span><span class="p">$</span><span class="nv">Week</span><span class="x">[303]</span>
+</pre></div>
+
+
+<p>Let us now understand the data at an aggregate level by plotting the histogram of the dependent variable, ILI.</p>
+<div class="highlight"><pre><span></span><span class="x">hist(FluTrain</span><span class="p">$</span><span class="nv">ILI</span><span class="x">)</span>
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/Rplothistflu.png" style="float: middle; width: 450px;"> </p>
+<p>Most of the ILI values are small, with a relatively small number of much larger values (in statistics, this sort of data is called "skew right").</p>
+<p>When handling a skewed dependent variable, it is often useful to predict the logarithm of the dependent variable instead of the dependent variable itself -- 
+this prevents the small number of unusually large or small observations from having an undue influence on the sum of squared errors of predictive models. 
+In this problem, we will predict the natural log of the ILI variable, which can be computed in R using the log() function.</p>
+<p>The plot can be obtained with:</p>
+<div class="highlight"><pre><span></span><span class="x">plot(FluTrain</span><span class="p">$</span><span class="nv">Queries</span><span class="x">, log(FluTrain</span><span class="p">$</span><span class="nv">ILI</span><span class="x">))</span>
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/Rplotlog.png" style="float: middle; width: 450px;">     </p>
+<p>Visually, there is a positive, linear relationship between log(ILI) and Queries.</p>
+<p>Based on the plot we just made, it seems that a linear regression model could be a good modeling choice. 
+Based on our understanding of the data from the previous subproblem, this model best describes our estimation problem:</p>
+<div class="highlight"><pre><span></span>log(ILI) = intercept + coefficient x Queries, where the coefficient is positive
+</pre></div>
+
+
+<p>The model can be trained with:</p>
+<div class="highlight"><pre><span></span>FluTrend1 = lm(log(ILI)~Queries, data=FluTrain)
+</pre></div>
+
+
+<p>From summary(FluTrend1), we read that the R-squared value is <strong>0.709</strong>.</p>
+<p>For a single variable linear regression model, there is a direct relationship between the R-squared and the correlation between the independent and the dependent variables.</p>
+<div class="highlight"><pre><span></span><span class="x">Correlation = cor(FluTrain</span><span class="p">$</span><span class="nv">Queries</span><span class="x">, log(FluTrain</span><span class="p">$</span><span class="nv">ILI</span><span class="x">))</span>
+</pre></div>
+
+
+<p>The values of the three expressions are then:</p>
+<div class="highlight"><pre><span></span>Correlation^2 = 0.7090201
+</pre></div>
+
+
+<p>It appears that Correlation^2 is equal to the R-squared value. </p>
+<p>The csv file FluTest.csv provides the 2012 weekly data of the ILI-related search queries and the observed weekly percentage of ILI-related physician visits. 
+Load this data into a data frame called FluTest.</p>
+<p>Normally, we would obtain test-set predictions from the model FluTrend1 using the code</p>
+<div class="highlight"><pre><span></span>PredTest1 = predict(FluTrend1, newdata=FluTest)
+</pre></div>
+
+
+<p>However, the dependent variable in our model is log(ILI), so PredTest1 would contain predictions of the log(ILI) value. 
+We are instead interested in obtaining predictions of the ILI value. 
+We can convert from predictions of log(ILI) to predictions of ILI via exponentiation, or the exp() function. The new code, which predicts the ILI value, is</p>
+<div class="highlight"><pre><span></span>PredTest1 = exp(predict(FluTrend1, newdata=FluTest))
+</pre></div>
+
+
+<p>For example in order to get the estimate for the percentage of ILI-related physician visits for the week of March 11, 2012, we need to type in our R console:</p>
+<div class="highlight"><pre><span></span><span class="x">PredTest1[which(FluTest</span><span class="p">$</span><span class="nv">Week</span><span class="x"> == &quot;2012-03-11 - 2012-03-17&quot;)]</span>
+</pre></div>
+
+
+<p>The predicted value is <strong>2.187383</strong>.</p>
+<p>The actual value is the 11th testing set ILI value or FluTest$ILI[11], which has value <strong>2.293422</strong>. 
+Finally we can compute the relative error to be <strong>(2.293422 - 2.187378)/2.293422 = 0.04624</strong></p>
+<p>The RMSE can be calculated by first computing the SSE:</p>
+<div class="highlight"><pre><span></span><span class="x">SSE = sum((PredTest1-FluTest</span><span class="p">$</span><span class="nv">ILI</span><span class="x">)^2)</span>
+
+<span class="x">RMSE = sqrt(SSE / nrow(FluTest))</span>
+</pre></div>
+
+
+<p>Alternatively, we could use the following command:</p>
+<div class="highlight"><pre><span></span><span class="x">sqrt(mean((PredTest1-FluTest</span><span class="p">$</span><span class="nv">ILI</span><span class="x">)^2))</span>
+</pre></div>
+
+
+<p>The RMSE value is <strong>0.7490645</strong></p>
+<h1>Training a Time Series Model</h1>
+<p>The observations in this dataset are consecutive weekly measurements of the dependent and independent variables. 
+This sort of dataset is called a "time series." Often, statistical models can be improved by predicting the current value of the dependent variable using the value of the 
+dependent variable from earlier weeks. In our models, this means we will predict the ILI variable in the current week using values of the ILI variable from previous weeks.</p>
+<p>First, we need to decide the amount of time to lag the observations. Because the ILI variable is reported with a 1- or 2-week lag, 
+a decision maker cannot rely on the previous week's ILI value to predict the current week's value. 
+Instead, the decision maker will only have data available from 2 or more weeks ago. 
+We will build a variable called ILILag2 that contains the ILI value from 2 weeks before the current observation.</p>
+<p>To do so, we will use the "zoo" package, which provides a number of helpful methods for time series models. 
+While many functions are built into R, we need to add new packages to use some functions. 
+We need to run the following two commands to install and load the zoo package. 
+In the first command, we will be prompted to select a CRAN mirror to use for your download. We need to select a mirror near us geographically.</p>
+<div class="highlight"><pre><span></span>install.packages(&quot;zoo&quot;)
+library(zoo)
+</pre></div>
+
+
+<p>After installing and loading the zoo package, we need to run the following commands to create the ILILag2 variable in the training set:</p>
+<div class="highlight"><pre><span></span><span class="x">ILILag2 = lag(zoo(FluTrain</span><span class="p">$</span><span class="nv">ILI</span><span class="x">), -2, na.pad=TRUE)</span>
+<span class="x">FluTrain</span><span class="p">$</span><span class="nv">ILILag2</span><span class="x"> = coredata(ILILag2)</span>
+</pre></div>
+
+
+<p>In these commands, the value of -2 passed to lag means to return 2 observations before the current one; 
+a positive value would have returned future observations. 
+The parameter na.pad=TRUE means to add missing values for the first two weeks of our dataset, where we can't compute the data from 2 weeks earlier.</p>
+<p><strong>2</strong> values are missing in the new ILILag2 variable. We can find out this using:</p>
+<div class="highlight"><pre><span></span><span class="x">summary(FluTrain</span><span class="p">$</span><span class="nv">ILILag2</span><span class="x">)</span>
+</pre></div>
+
+
+<p>We can use the plot() function to plot the log of ILILag2 against the log of ILI. </p>
+<div class="highlight"><pre><span></span><span class="x">plot(log(FluTrain</span><span class="p">$</span><span class="nv">ILILag2</span><span class="x">), log(FluTrain</span><span class="p">$</span><span class="nv">ILI</span><span class="x">))</span>
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/Rplotlaglog.png" style="float: middle; width: 450px;"></p>
+<p>We can see that there is a strong positive relationship between log(ILILag2) and log(ILI). </p>
+<p>We can train a linear regression model on the FluTrain dataset to predict the log of the ILI variable using the Queries variable as well as the log of the ILILag2 variable.
+We can call this model FluTrend2.</p>
+<div class="highlight"><pre><span></span>FluTrend2 = lm(log(ILI)~Queries+log(ILILag2), data=FluTrain)
+summary(FluTrend2)
+</pre></div>
+
+
+<p>As can be seen, all three coefficients are highly significant, and the R^2 value is <strong>0.9063</strong>.</p>
+<p>Moving from FluTrend1 to FluTrend2, in-sample R^2 improved from 0.709 to 0.9063, and the new variable is highly significant. 
+As a result, there is no sign of overfitting, and FluTrend2 is superior to FluTrend1 on the training set.</p>
+<h1>Evaluating the Time Series Model in the Test Set</h1>
+<p>So far, we have only added the ILILag2 variable to the FluTrain data frame. To make predictions with our FluTrend2 model, 
+we will also need to add ILILag2 to the FluTest data frame (note that adding variables before splitting into a training and testing 
+set can prevent this duplication of effort).</p>
+<p>We can add the new variable with:</p>
+<div class="highlight"><pre><span></span><span class="x">ILILag2 = lag(zoo(FluTest</span><span class="p">$</span><span class="nv">ILI</span><span class="x">), -2, na.pad=TRUE)</span>
+<span class="x">FluTest</span><span class="p">$</span><span class="nv">ILILag2</span><span class="x"> = coredata(ILILag2)</span>
+</pre></div>
+
+
+<p>From summary(FluTest$ILILag2), we can see that we're missing two values of the new variable.</p>
+<p>In this problem, the training and testing sets are split sequentially -- the training set contains all observations from 2004-2011 and the testing set contains all 
+observations from 2012. There is no time gap between the two datasets, meaning the first observation in FluTest was recorded one week after the last observation in FluTrain.
+ From this, we can identify how to fill in the missing values for the ILILag2 variable in FluTest.</p>
+<p>The time two weeks before the first week of 2012 is the second-to-last week of 2011. This corresponds to the second-to-last observation in FluTrain.
+The time two weeks before the second week of 2012 is the last week of 2011. This corresponds to the last observation in FluTrain.</p>
+<p>From nrow(FluTrain), we see that there are 417 observations in the training set. Therefore, we need to run the following two commands:</p>
+<div class="highlight"><pre><span></span><span class="x">FluTest</span><span class="p">$</span><span class="nv">ILILag2</span><span class="x">[1] = FluTrain</span><span class="p">$</span><span class="nv">ILI</span><span class="x">[416]</span>
+<span class="x">FluTest</span><span class="p">$</span><span class="nv">ILILag2</span><span class="x">[2] = FluTrain</span><span class="p">$</span><span class="nv">ILI</span><span class="x">[417]</span>
+</pre></div>
+
+
+<p>We can obtain the test-set predictions with:</p>
+<div class="highlight"><pre><span></span>PredTest2 = exp(predict(FluTrend2, newdata=FluTest))
+</pre></div>
+
+
+<p>And then we can compute the RMSE with the following commands:</p>
+<div class="highlight"><pre><span></span><span class="x">SSE = sum((PredTest2-FluTest</span><span class="p">$</span><span class="nv">ILI</span><span class="x">)^2)</span>
+<span class="x">RMSE = sqrt(SSE / nrow(FluTest))</span>
+</pre></div>
+
+
+<p>Alternatively, you could use the following command to compute the RMSE:</p>
+<div class="highlight"><pre><span></span><span class="x">sqrt(mean((PredTest2-FluTest</span><span class="p">$</span><span class="nv">ILI</span><span class="x">)^2)).</span>
+</pre></div>
+
+
+<p>The test-set RMSE of FluTrend2 is <strong>0.294</strong>.</p>
+<p>The test-set RMSE of FluTrend2 is <strong>0.294</strong>, as opposed to the <strong>0.749</strong> value obtained by the FluTrend1 model.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/reading-test-scores.html" rel="bookmark"
+                           title="Permalink to READING TEST SCORES">READING TEST SCORES</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 13 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/linear-regression.html">Linear Regression</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>The Programme for International Student Assessment (PISA) is a test given every three years to 15-year-old students from around the world to evaluate their performance in mathematics, 
+reading, and science. This test provides a quantitative way to compare the performance of students from different parts of the world. In this ...</p>
+                <a class="readmore" href="/reading-test-scores.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/climate-change.html" rel="bookmark"
+                           title="Permalink to CLIMATE CHANGE">CLIMATE CHANGE</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 12 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/linear-regression.html">Linear Regression</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>There have been many studies documenting that the average global temperature has been increasing over the last century. 
+The consequences of a continued rise in global temperature will be dire. Rising sea levels and an increased frequency of extreme weather events will affect billions of people.</p>
+<p>Today, we will attempt ...</p>
+                <a class="readmore" href="/climate-change.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="https://www.linkedin.com/in/usmanijaz">LinkedIn</a></li>
+                            <li><a href="">Email: uijaz59@gmail</a></li>
+                            <li><a href="">Phone: +49 1573 8091889</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://www.facebook.com/usman.ijaz.77">Facebook</a></li>
+                            <li><a href="https://twitter.com/uijaz59">Twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

@@ -1,291 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>usmanijaz</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
 
-<!DOCTYPE HTML>
-<!--
-	Dopetrope 2.0 by HTML5 UP
-	html5up.net | @n33co
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-			<title>usmanijaz</title>
-			<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-			<meta charset="utf-8" />
-			<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900,300italic" rel="stylesheet" />
-				<link rel="stylesheet" href="/theme/css/pygment.css" />
-			<noscript>
-				<link rel="stylesheet" href="/theme/css/skel-noscript.css" />
-				<link rel="stylesheet" href="/theme/css/style.css" />
-				<link rel="stylesheet" href="/theme/css/style-desktop.css" />
-			</noscript>
-	</head>
-	<body class="no-sidebar">
-		<!-- Header Wrapper -->
-			<div id="header-wrapper">
-				<div class="container">
-					<div class="row">
-						<div class="12u">
-						
-							<!-- Header -->
-								<section id="header">
-									
-									<!-- Logo -->
-									<h1><a href="/">usmanijaz</a></h1>
-									
-									<!-- Nav -->
-										<nav id="nav">
-											<ul>
-											</ul>
-										</nav>
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
 
-								</section>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">usmanijaz </a></h1>
+                <nav><ul>
+                </ul>
+                </nav>
+<div id="submenu">
+                    <ul>
+                            <li><a href="/category/data-analysis.html">Data Analysis</a></li>
+                            <li><a href="/category/linear-regression.html">Linear Regression</a></li>
+                            <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
+                            <li><a href="/category/text-analysis.html">Text Analysis</a></li>
+                            <li><a href="/category/trees.html">Trees</a></li>
+                    </ul>
+                <div>
+        </header><!-- /#banner -->
 
-						</div>
-					</div>
-				</div>
-			</div>
-		
-		<!-- Main Wrapper -->
-			<div id="main-wrapper">
-				<div class="container">
-<div class="row">
-<div class="12u">
-    <section>
-            <div class="row">
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>LETTER RECOGNITION</h3>
-                            <span class="byline">2015-06-20 10:45:00+02:00</span>
-                        </header>
-                        <p>One of the earliest applications of the predictive analytics methods was to automatically recognize letters, which post office machines use to sort mail.
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/automating-reviews-in-medicine.html">AUTOMATING REVIEWS IN MEDICINE</a></h1>
+<footer class="post-info">
+        <span>Mon 22 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/text-analysis.html">Text Analysis</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info --><p>The medical literature is enormous. Pubmed, a database of medical publications maintained by the U.S. National Library of Medicine, has indexed over 23 million
+ medical publications. Further, the rate of medical publication has increased over time, and now there are nearly 1 million new publications in the field each 
+ year, or more than one per minute.</p>
+<p>The large size and fast-changing nature of the medical literature has increased the need for reviews, which search databases like Pubmed for papers on a particular
+ topic and then report results from the papers found. While such reviews are often performed manually, with multiple people reviewing each search result, this is 
+ tedious and time consuming. In this problem, we will see how text analytics can be used to automate the process of information retrieval.</p>
+<p>The dataset consists of the titles (variable title) and abstracts (variable abstract) of papers retrieved in a Pubmed search. Each search result is labeled with 
+whether the paper is a clinical trial testing a drug therapy for cancer (variable trial). These labels were obtained by two people reviewing each search result 
+and accessing the actual paper if necessary, as part of a literature review of clinical trials testing drug therapies for advanced and metastatic breast cancer.</p>
+<p>Let's load clinical_trial.csv into a data frame called trials (remembering to add the argument stringsAsFactors=FALSE), and investigate the data frame with 
+summary() and str().</p>
+<p>We can use R's string functions to learn more about the titles and abstracts of the located papers. The nchar() function counts the number of characters in a 
+piece of text. Using the nchar() function on the variables in the data frame, we can get some basic information.</p>
+<p>The longest abstracy contains <strong>3708</strong> characters. <strong>112</strong> provided no search results. <strong>A decade of letrozole: FACE.</strong> is the observation with mimimum number of 
+characters in it.</p>
+<div class="highlight"><pre><span></span><span class="x">max(nchar(trials</span><span class="p">$</span><span class="nv">abstract</span><span class="x">))</span>
+<span class="x">table(nchar(trials</span><span class="p">$</span><span class="nv">abstract</span><span class="x">)==0)</span>
+<span class="x">trials</span><span class="p">$</span><span class="nv">title</span><span class="x">[which.min(nchar(trials</span><span class="p">$</span><span class="nv">title</span><span class="x">))]</span>
+</pre></div>
+
+
+<p>Because we have both title and abstract information for trials, we need to build two corpera instead of one. Name them corpusTitle and corpusAbstract.</p>
+<p>Let's create the corpus:
+    library(tm)
+    corpusTitle = Corpus(VectorSource(trials$title))
+    corpusAbstract = Corpus(VectorSource(trials$abstract))</p>
+<p>Converting text to lower letters:</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, tolower)
+corpusAbstract = tm_map(corpusAbstract, tolower)
+</pre></div>
+
+
+<p>Following lines convert corpus to a Plain Text Document</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, PlainTextDocument)
+corpusAbstract = tm_map(corpusAbstract, PlainTextDocument)
+</pre></div>
+
+
+<p>For removing punctuation:</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, removePunctuation)
+corpusAbstract = tm_map(corpusAbstract, removePunctuation)
+</pre></div>
+
+
+<p>Removing English language stopwords</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, removeWords, stopwords(&quot;english&quot;))
+corpusAbstract = tm_map(corpusAbstract, removeWords, stopwords(&quot;english&quot;))
+</pre></div>
+
+
+<p>Stemming the documents:</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, stemDocument)
+corpusAbstract = tm_map(corpusAbstract, stemDocument)
+</pre></div>
+
+
+<p>Building document term matrices</p>
+<div class="highlight"><pre><span></span>dtmTitle =  DocumentTermMatrix(corpusTitle)
+dtmAbstract =  DocumentTermMatrix(corpusAbstract)
+</pre></div>
+
+
+<p>Let's limit dtmTitle and dtmAbstract to terms with sparseness of at most 95% (aka terms that appear in at least 5% of documents).</p>
+<div class="highlight"><pre><span></span>dtmTitle = removeSparseTerms(dtmTitle, 0.95)
+dtmAbstract = removeSparseTerms(dtmAbstract, 0.95)
+</pre></div>
+
+
+<p>Converting document erm matrices to data frames</p>
+<div class="highlight"><pre><span></span>dtmTitle = as.data.frame(as.matrix(dtmTitle))
+ncol(dtmTitle)
+
+dtmAbstract = as.data.frame(as.matrix(dtmAbstract))
+ncol(dtmAbstract)
+</pre></div>
+
+
+<p>There are <strong>31</strong> terms remained in dtmTitle and <strong>335</strong> in dtmAbstract after removing sparse terms. dtmAbstract has many more words because titles are so short, 
+a word needs to be very common to appear in 5% of titles. Because abstracts have many more words, a word can be much less common and still appear in 5% of 
+abstracts.</p>
+<p>While abstracts may have wider vocabulary, this is a secondary effect. As we saw in the previous subsection, all papers have titles, but not all have abstracts.    </p>
+<p><strong>Patient</strong> is the most frequent word stem across all the abstracts.  <br />
+    which.max(colSums(dtmAbstract))</p>
+<p>We want to combine dtmTitle and dtmAbstract into a single data frame to make predictions. 
+However, some of the variables in these data frames have the same names. To fix this issue, run the following commands:</p>
+<div class="highlight"><pre><span></span>colnames(dtmTitle) = paste0(&quot;T&quot;, colnames(dtmTitle))
+colnames(dtmAbstract) = paste0(&quot;A&quot;, colnames(dtmAbstract))
+</pre></div>
+
+
+<p>The first line pastes a T at the beginning of each column name for dtmTitle, which are the variable names. The second line does something similar for
+ the Abstract variables - it pastes an A at the beginning of each column name for dtmAbstract, which are the variable names.    </p>
+<p>Using cbind(), let's combine dtmTitle and dtmAbstract into a single data frame called dtm:</p>
+<div class="highlight"><pre><span></span><span class="x">dtm = cbind(dtmTitle, dtmAbstract)</span>
+<span class="x">dtm</span><span class="p">$</span><span class="nv">trial</span><span class="x"> = trials</span><span class="p">$</span><span class="nv">trial</span><span class="x"></span>
+<span class="x">ncol(dtm)</span>
+</pre></div>
+
+
+<p>dtm contains <strong>367</strong> variables. </p>
+<p>Now that we have prepared our data frame, it's time to split it into a training and testing set and to build regression models. Let's set the random seed to 
+144 and use the sample.split function from the caTools package to split dtm into data frames named "train" and "test", putting 70% of the data in the 
+training set.</p>
+<div class="highlight"><pre><span></span><span class="x">set.seed(144)</span>
+<span class="x">spl = sample.split(dtm</span><span class="p">$</span><span class="nv">trial</span><span class="x">, 0.7)</span>
+<span class="x">train = subset(dtm, spl == TRUE)</span>
+<span class="x">test = subset(dtm, spl == FALSE)</span>
+</pre></div>
+
+
+<p>The accuracy of the baseline model on the training set is <strong>0.5606759</strong>.
+Just as in any binary classification problem, the naive baseline always predicts the most common class. From table(train$trial), we see 730 training set results
+ were not trials, and 572 were trials. Therefore, the naive baseline always predicts a result is not a trial, yielding accuracy of 730/(730+572).</p>
+<p>Let's build a CART model called trialCART, using all the independent variables in the training set to train the model, and then plot the CART model. 
+We will just use the default parameters to build the model. Remember to add the method="class" argument, since this is a classification problem.</p>
+<p><strong>Tphase</strong> is the name of the first variable the model split on. The first split checks whether or not Tphase is less than 0.5. This can be accomplished with:</p>
+<div class="highlight"><pre><span></span>trialCART = rpart(trial~., data=train, method=&quot;class&quot;)
+prp(trialCART)
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/RplotTrialTree.png" style="float: middle; width: 450px;">   </p>
+<p><strong>0.8718861</strong> is the maximum prediction on the training set. The training set predictions can be obtained and summarized with the following commands:</p>
+<div class="highlight"><pre><span></span>pred = predict(trialCART)
+predTrain = pred[,2]
+max(predTrain)
+</pre></div>
+
+
+<p>Without running the analysis, we can expect the maximum predicted probability will not differ in the testing set, Because the CART tree assigns the same 
+predicted probability to each leaf node and there are a small number of leaf nodes compared to data points.</p>
+<p>We can compare the predictions with threshold 0.5 to the true results in the training set with:</p>
+<div class="highlight"><pre><span></span><span class="x">table(train</span><span class="p">$</span><span class="nv">trial</span><span class="x">, predTrain &gt;= 0.5)</span>
+</pre></div>
+
+
+<p>We conclude that the model has training set accuracy (631+441)/(631+441+99+131)= <strong>0.8233487</strong>, sensitivity 441/(441+131)= <strong>0.770979</strong> and specificity 
+631/(631+99)=<strong>0.8643836</strong>.</p>
+<h1>Evaluating the model on the testing set</h1>
+<p>Let's evaluate the CART model on the testing set using the predict function and creating a vector of predicted probabilities predTest. The testing set 
+predictions can be obtained and compared to the true outcomes with:</p>
+<div class="highlight"><pre><span></span><span class="x">predTest = predict(trialCART, newdata=test)[,2]</span>
+<span class="x">table(test</span><span class="p">$</span><span class="nv">trial</span><span class="x">, predTest &gt;= 0.5)</span>
+</pre></div>
+
+
+<p>From this, we read that the testing set accuracy is (261+162)/(261+162+83+52)= <strong>0.7580645</strong>. The AUC can be determined using the following code:</p>
+<div class="highlight"><pre><span></span><span class="x">library(ROCR)</span>
+<span class="x">predROCR = prediction(predTest, test</span><span class="p">$</span><span class="nv">trial</span><span class="x">)</span>
+<span class="x">perfROCR = performance(predROCR, &quot;tpr&quot;, &quot;fpr&quot;)</span>
+<span class="x">plot(perfROCR, colorize=TRUE)</span>
+<span class="x">performance(predROCR, &quot;auc&quot;)@y.values</span>
+</pre></div>
+
+
+<p>AUC value is:<strong>0.8371063</strong>. </p>
+<p><img alt="Photo" src="../images/RplotTrialROCR.png" style="float: middle; width: 450px;"></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/detecting-vandalism-on-wikipedia.html" rel="bookmark"
+                           title="Permalink to DETECTING VANDALISM ON WIKIPEDIA">DETECTING VANDALISM ON WIKIPEDIA</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 21 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/text-analysis.html">Text Analysis</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>Wikipedia is a free online encyclopedia that anyone can edit and contribute to. It is available in many languages and is growing all the time. 
+On the English language version of Wikipedia:</p>
+<ul>
+<li>There are currently 4.7 million pages.</li>
+<li>There have been a total over 760 million edits (also called ...</li></ul>
+                <a class="readmore" href="/detecting-vandalism-on-wikipedia.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/predicting-earnings-from-census-data.html" rel="bookmark"
+                           title="Permalink to PREDICTING EARNINGS FROM CENSUS DATA">PREDICTING EARNINGS FROM CENSUS DATA</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 21 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/trees.html">Trees</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>The United States government periodically collects demographic information by conducting a census.</p>
+<p>Today, we are going to use census information about an individual to predict how much a person earns -- in particular, whether the person earns more than $50,000 
+per year. This data comes from the UCI Machine Learning ...</p>
+                <a class="readmore" href="/predicting-earnings-from-census-data.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/letter-recognition.html" rel="bookmark"
+                           title="Permalink to LETTER RECOGNITION">LETTER RECOGNITION</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 20 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/trees.html">Trees</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>One of the earliest applications of the predictive analytics methods was to automatically recognize letters, which post office machines use to sort mail.
 In this problem, we will build a model that uses statistics of images of four letters in the Roman alphabet -- A, B, P, and R -- to predict ...</p>
-                        <footer class="actions">
-                            <a href="/letter-recognition.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>UNDERSTANDING WHY PEOPLE VOTE</h3>
-                            <span class="byline">2015-06-19 10:45:00+02:00</span>
-                        </header>
-                        <p>In August 2006 three researchers (Alan Gerber and Donald Green of Yale University, and Christopher Larimer of the University of Northern Iowa) carried 
+                <a class="readmore" href="/letter-recognition.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/understanding-why-people-vote.html" rel="bookmark"
+                           title="Permalink to UNDERSTANDING WHY PEOPLE VOTE">UNDERSTANDING WHY PEOPLE VOTE</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 19 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/trees.html">Trees</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>In August 2006 three researchers (Alan Gerber and Donald Green of Yale University, and Christopher Larimer of the University of Northern Iowa) carried 
 out a large scale field experiment in Michigan, USA to test the hypothesis that one of the reasons people vote is social, or extrinsic, pressure. 
 To quote ...</p>
-                        <footer class="actions">
-                            <a href="/understanding-why-people-vote.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>PREDICTING LOAN REPAYMENT</h3>
-                            <span class="byline">2015-06-18 10:45:00+02:00</span>
-                        </header>
-                        <p>In the lending industry, investors provide loans to borrowers in exchange for the promise of repayment with interest. 
+                <a class="readmore" href="/understanding-why-people-vote.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/predicting-loan-repayment.html" rel="bookmark"
+                           title="Permalink to PREDICTING LOAN REPAYMENT">PREDICTING LOAN REPAYMENT</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 18 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/logistic-regression.html">Logistic Regression</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>In the lending industry, investors provide loans to borrowers in exchange for the promise of repayment with interest. 
 If the borrower repays the loan, then the lender profits from the interest. However, if the borrower is unable to repay the loan, 
 then the lender loses money. Therefore, lenders face the ...</p>
-                        <footer class="actions">
-                            <a href="/predicting-loan-repayment.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-            </div>
-            <div class="row">
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>PREDICTING PAROLE VIOLATORS</h3>
-                            <span class="byline">2015-06-17 10:45:00+02:00</span>
-                        </header>
-                        <p>In many criminal justice systems around the world, inmates deemed not to be a threat to society are released from prison under the parole system prior to completing their sentence. 
+                <a class="readmore" href="/predicting-loan-repayment.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/predicting-parole-violators.html" rel="bookmark"
+                           title="Permalink to PREDICTING PAROLE VIOLATORS">PREDICTING PAROLE VIOLATORS</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 17 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/logistic-regression.html">Logistic Regression</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>In many criminal justice systems around the world, inmates deemed not to be a threat to society are released from prison under the parole system prior to completing their sentence. 
 They are still considered to be serving their sentence while on parole, and they can be returned to prison if ...</p>
-                        <footer class="actions">
-                            <a href="/predicting-parole-violators.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>POPULARITY OF MUSIC RECORDS</h3>
-                            <span class="byline">2015-06-16 10:45:00+02:00</span>
-                        </header>
-                        <p>The music industry has a well-developed market with a global annual revenue around $15 billion. 
+                <a class="readmore" href="/predicting-parole-violators.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/popularity-of-music-records.html" rel="bookmark"
+                           title="Permalink to POPULARITY OF MUSIC RECORDS">POPULARITY OF MUSIC RECORDS</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 16 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/logistic-regression.html">Logistic Regression</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>The music industry has a well-developed market with a global annual revenue around $15 billion. 
 The recording industry is highly competitive and is dominated by three big production companies which make up nearly 82% of the total annual album sales. </p>
 <p>Artists are at the core of the music industry and ...</p>
-                        <footer class="actions">
-                            <a href="/popularity-of-music-records.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>DETECTING FLU EPIDEMICS VIA SEARCH ENGINE QUERY DATA</h3>
-                            <span class="byline">2015-06-15 10:45:00+02:00</span>
-                        </header>
-                        <p>Flu epidemics constitute a major public health concern causing respiratory illnesses, hospitalizations, and deaths. According to the National Vital Statistics Reports published in October
+                <a class="readmore" href="/popularity-of-music-records.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/detecting-flu-epidemics-via-search-engine-query-data.html" rel="bookmark"
+                           title="Permalink to DETECTING FLU EPIDEMICS VIA SEARCH ENGINE QUERY DATA">DETECTING FLU EPIDEMICS VIA SEARCH ENGINE QUERY DATA</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 15 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/linear-regression.html">Linear Regression</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>Flu epidemics constitute a major public health concern causing respiratory illnesses, hospitalizations, and deaths. According to the National Vital Statistics Reports published in October
  2012, influenza ranked as the eighth leading cause of death in 2011 in the United States. Each year, 250,000 to 500,000 deaths are attributed ...</p>
-                        <footer class="actions">
-                            <a href="/detecting-flu-epidemics-via-search-engine-query-data.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-            </div>
-            <div class="row">
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>READING TEST SCORES</h3>
-                            <span class="byline">2015-06-13 10:45:00+02:00</span>
-                        </header>
-                        <p>The Programme for International Student Assessment (PISA) is a test given every three years to 15-year-old students from around the world to evaluate their performance in mathematics, 
+                <a class="readmore" href="/detecting-flu-epidemics-via-search-engine-query-data.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/reading-test-scores.html" rel="bookmark"
+                           title="Permalink to READING TEST SCORES">READING TEST SCORES</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 13 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/linear-regression.html">Linear Regression</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->                <p>The Programme for International Student Assessment (PISA) is a test given every three years to 15-year-old students from around the world to evaluate their performance in mathematics, 
 reading, and science. This test provides a quantitative way to compare the performance of students from different parts of the world. In this ...</p>
-                        <footer class="actions">
-                            <a href="/reading-test-scores.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>CLIMATE CHANGE</h3>
-                            <span class="byline">2015-06-12 10:45:00+02:00</span>
-                        </header>
-                        <p>There have been many studies documenting that the average global temperature has been increasing over the last century. 
-The consequences of a continued rise in global temperature will be dire. Rising sea levels and an increased frequency of extreme weather events will affect billions of people.</p>
-<p>Today, we will attempt ...</p>
-                        <footer class="actions">
-                            <a href="/climate-change.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>DEMOGRAPHICS AND EMPLOYMENT IN THE UNITED STATES</h3>
-                            <span class="byline">2015-06-11 10:25:00+02:00</span>
-                        </header>
-                        <p>In the wake of the Great Recession of 2009, there has been a good deal of focus on employment statistics, 
-one of the most important metrics policymakers use to gauge the overall strength of the economy. 
-In the United States, the government measures unemployment using the Current Population Survey (CPS ...</p>
-                        <footer class="actions">
-                            <a href="/demographics-and-employment-in-the-united-states.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-            </div>
-            <div class="row">
-                <div class="4u">
-                    <section class="box">
-                        <header>
-                            <h3>STOCK DYNAMICS</h3>
-                            <span class="byline">2015-06-04 09:20:00+02:00</span>
-                        </header>
-                        <p>A stock market is where buyers and sellers trade shares of a company, and is one of the most popular ways for individuals and companies to invest money. The size of the world stock market  is now estimated to be in the trillions.
-The largest stock market in the world ...</p>
-                        <footer class="actions">
-                            <a href="/stock-dynamics.html" class="button button-icon button-icon-1">Continue Reading</a>
-                        </footer>
-                    </section>
-                </div>
-    </section><!-- /#content -->
-            <p class="paginator">
-                Page 1 / 2
-                    <a href="/index2.html">&raquo;</a>
-            </p>
-</div>
-</div>
+                <a class="readmore" href="/reading-test-scores.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 2
+        <a href="/index2.html">&raquo;</a>
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="https://www.linkedin.com/in/usmanijaz">LinkedIn</a></li>
+                            <li><a href="">Email: uijaz59@gmail</a></li>
+                            <li><a href="">Phone: +49 1573 8091889</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
 
-				</div>
-			</div>
+                            <li><a href="https://www.facebook.com/usman.ijaz.77">Facebook</a></li>
+                            <li><a href="https://twitter.com/uijaz59">Twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
-		<!-- Footer Wrapper -->
-			<div id="footer-wrapper">
-				<!-- Footer -->
-					<section id="footer" class="container">
-						<div class="row">
-							<div class="8u">
-								<section>
-									<header>
-										<h2>Latest articles</h2>
-									</header>
-									<ul class="dates">
-										<li>
-											<span class="date">Jun <strong>20</strong></span>
-											<h3><a href="letter-recognition.html">LETTER RECOGNITION</a></h3>
-											<p><p>One of the earliest applications of the predictive analytics methods was to automatically recognize letters, which post office machines use to sort mail.
-In this problem, we will build a model that uses statistics of images of four letters in the Roman alphabet -- A, B, P, and R -- to predict ...</p></p>
-										</li>
-										<li>
-											<span class="date">Jun <strong>19</strong></span>
-											<h3><a href="understanding-why-people-vote.html">UNDERSTANDING WHY PEOPLE VOTE</a></h3>
-											<p><p>In August 2006 three researchers (Alan Gerber and Donald Green of Yale University, and Christopher Larimer of the University of Northern Iowa) carried 
-out a large scale field experiment in Michigan, USA to test the hypothesis that one of the reasons people vote is social, or extrinsic, pressure. 
-To quote ...</p></p>
-										</li>
-										<li>
-											<span class="date">Jun <strong>18</strong></span>
-											<h3><a href="predicting-loan-repayment.html">PREDICTING LOAN REPAYMENT</a></h3>
-											<p><p>In the lending industry, investors provide loans to borrowers in exchange for the promise of repayment with interest. 
-If the borrower repays the loan, then the lender profits from the interest. However, if the borrower is unable to repay the loan, 
-then the lender loses money. Therefore, lenders face the ...</p></p>
-										</li>
-										<li>
-											<span class="date">Jun <strong>17</strong></span>
-											<h3><a href="predicting-parole-violators.html">PREDICTING PAROLE VIOLATORS</a></h3>
-											<p><p>In many criminal justice systems around the world, inmates deemed not to be a threat to society are released from prison under the parole system prior to completing their sentence. 
-They are still considered to be serving their sentence while on parole, and they can be returned to prison if ...</p></p>
-										</li>
-									</ul>
-								</section>
-							</div>
-						</div>
-						<div class="row">
-							<div class="4u">
-								<section>
-									<header>
-										<h2>Blogroll</h2>
-									</header>
-									<ul class="divided">
-											<li><a href="http://getpelican.com/">Pelican</a></li>
-											<li><a href="http://python.org/">Python.org</a></li>
-											<li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-											<li><a href="#">You can modify those links in your config file</a></li>
-									</ul>
-								</section>
-							</div>
-							<div class="4u">
-								<section>
-									<header>
-										<h2>Categories</h2>
-									</header>
-									<ul class="divided">
-											<li><a href="/category/projects.html">Projects</a></li>
-									</ul>
-								</section>
-							</div>
-							<div class="4u">
-							
-								<section>
-									<header>
-										<h2>Contact</h2>
-									</header>
-									<ul class="social">
-									</ul>
-								</section>
-							</div>
-						</div>
-					</section>
-			</div>
-		<script src="/theme/js/jquery.min.js"></script>
-		<script src="/theme/js/jquery.dropotron.js"></script>
-		<script src="/theme/js/config.js"></script>
-		<script src="/theme/js/skel.min.js"></script>
-		<script src="/theme/js/skel-panels.min.js"></script>
-		<!--[if lte IE 8]><script src="js/html5shiv.js"></script><link rel="stylesheet" href="/theme/css/ie8.css" /><![endif]-->
-	</body>
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
 </html>

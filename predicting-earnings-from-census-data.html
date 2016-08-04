@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>PREDICTING EARNINGS FROM CENSUS DATA</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">usmanijaz </a></h1>
+                <nav><ul>
+                </ul>
+                </nav>
+<div id="submenu">
+                    <ul>
+                            <li><a href="/category/data-analysis.html">Data Analysis</a></li>
+                            <li><a href="/category/linear-regression.html">Linear Regression</a></li>
+                            <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
+                            <li><a href="/category/text-analysis.html">Text Analysis</a></li>
+                            <li class="active"><a href="/category/trees.html">Trees</a></li>
+                    </ul>
+                <div>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/predicting-earnings-from-census-data.html" rel="bookmark"
+           title="Permalink to PREDICTING EARNINGS FROM CENSUS DATA">PREDICTING EARNINGS FROM CENSUS DATA</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 21 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/trees.html">Trees</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->      <p>The United States government periodically collects demographic information by conducting a census.</p>
+<p>Today, we are going to use census information about an individual to predict how much a person earns -- in particular, whether the person earns more than $50,000 
+per year. This data comes from the UCI Machine Learning Repository.</p>
+<p>The file census.csv contains 1994 census data for 31,978 individuals in the United States.</p>
+<p>The dataset includes the following 13 variables:</p>
+<ul>
+<li><strong>age</strong> = the age of the individual in years</li>
+<li><strong>workclass</strong> = the classification of the individual's working status (does the person work for the federal government, work for the local government, work without pay, and so on)</li>
+<li><strong>education</strong> = the level of education of the individual (e.g., 5th-6th grade, high school graduate, PhD, so on)</li>
+<li><strong>maritalstatus</strong> = the marital status of the individual</li>
+<li><strong>occupation</strong> = the type of work the individual does (e.g., administrative/clerical work, farming/fishing, sales and so on)</li>
+<li><strong>relationship</strong> = relationship of individual to his/her household</li>
+<li><strong>race</strong> = the individual's race</li>
+<li><strong>sex</strong> = the individual's sex</li>
+<li><strong>capitalgain</strong> = the capital gains of the individual in 1994 (from selling an asset such as a stock or bond for more than the original purchase price)</li>
+<li><strong>capitalloss</strong> = the capital losses of the individual in 1994 (from selling an asset such as a stock or bond for less than the original purchase price)</li>
+<li><strong>hoursperweek</strong> = the number of hours the individual works per week</li>
+<li><strong>nativecountry</strong> = the native country of the individual</li>
+<li><strong>over50k</strong> = whether or not the individual earned more than $50,000 in 1994</li>
+</ul>
+<h1>A Logistic Regression Model</h1>
+<p>Let's begin by building a logistic regression model to predict whether an individual's earnings are above $50,000 (the variable "over50k") using all of the 
+other variables as independent variables. First, let's read the dataset census.csv into R.</p>
+<div class="highlight"><pre><span></span>census = read.csv(&quot;census.csv&quot;)
+</pre></div>
+
+
+<p>Let's split the data randomly into a training set and a testing set, setting the seed to 2000 before creating the split. 
+We are splitting the data so that the training set contains 60% of the observations, while the testing set contains 40% of the observations.</p>
+<div class="highlight"><pre><span></span><span class="x">library(caTools)</span>
+<span class="x">set.seed(2000)</span>
+<span class="x">spl = sample.split(census</span><span class="p">$</span><span class="nv">over50k</span><span class="x">, SplitRatio = 0.6)</span>
+<span class="x">Train = subset(census, spl==TRUE)</span>
+<span class="x">Test = subset(census, spl==FALSE)</span>
+</pre></div>
+
+
+<p>Next, let's build a logistic regression model to predict the dependent variable "over50k", using all of the other variables in the dataset as independent 
+variables. We are using the training set to build the model.</p>
+<div class="highlight"><pre><span></span>censusLog = glm(over50k ~ . , data = Train, family = &quot;binomial&quot;)
+summary(censusLog)
+</pre></div>
+
+
+<p>We can see that the age, workclass, education, maritalstatus, occupation, relationship, sex, capitalgain, capitalloss and hoursperweek are the significant variables if we 
+use 0.1 as your significance threshold, so variables with a period or dot in the stars column should be counted too.</p>
+<div class="highlight"><pre><span></span><span class="x">predictLog = predict(censusLog,newdata = Test,type=&quot;response&quot;)</span>
+<span class="x">table(Test</span><span class="p">$</span><span class="nv">over50k</span><span class="x">, predictLog &gt;= 0.5)</span>
+</pre></div>
+
+
+<p>If we divide the sum of the main diagonal by the sum of all of the entries in the matrix, we obtain the testing set accuracy:</p>
+<div class="highlight"><pre><span></span>(9051+1888)/(9051+662+1190+1888) = 0.8552107
+</pre></div>
+
+
+<p>For the testing set baseline accuracy, we need to first determine the most frequent outcome in the training set. To do that, we table the dependent variable in the training set:</p>
+<div class="highlight"><pre><span></span><span class="x">table(Train</span><span class="p">$</span><span class="nv">over50k</span><span class="x">)</span>
+</pre></div>
+
+
+<p>"&lt;=50K" is the more frequent outcome (14570 observations), so this is what the baseline predicts. 
+To generate the accuracy of the baseline on the test set, we can table the dependent variable in the test set:</p>
+<div class="highlight"><pre><span></span><span class="x">table(Test</span><span class="p">$</span><span class="nv">over50k</span><span class="x">)</span>
+</pre></div>
+
+
+<p>The baseline accuracy is</p>
+<div class="highlight"><pre><span></span>9713/(9713+3078) = 0.7593621.
+</pre></div>
+
+
+<p>To find out Area Under the Curve(AUC):</p>
+<div class="highlight"><pre><span></span><span class="x">library(ROCR)</span>
+<span class="x">PredictROC = predict(censusLog, newdata = Test)</span>
+<span class="x">pred = prediction(PredictROC,Test</span><span class="p">$</span><span class="nv">over50k</span><span class="x">)</span>
+<span class="x">as.numeric(performance(pred,&quot;auc&quot;)@y.values)</span>
+<span class="x">perfLog=performance(pred,&quot;tpr&quot;,&quot;fpr&quot;)</span>
+<span class="x">plot(perfLog)</span>
+</pre></div>
+
+
+<p>And the AUC value is : <strong>0.9061598</strong>    </p>
+<p><img alt="Photo" src="../images/RplotLogROC.png" style="float: middle; width: 450px;"></p>
+<h1>A CART Model</h1>
+<p>We have just seen how the logistic regression model for this data achieves a high accuracy. Moreover, the significances of the variables give us a way to 
+gauge which variables are relevant for this prediction task. However, it is not immediately clear which variables are more important than the others, 
+especially due to the large number of factor variables in this problem.</p>
+<p>Let us now build a classification tree to predict "over50k". We will use the training set to build the model, and all of the other variables as independent 
+variables. Let's use the default parameters, so we don't set a value for minbucket or cp. We also need to specify method="class" as an argument to rpart, 
+since this is a classification problem. </p>
+<div class="highlight"><pre><span></span>library(&quot;rpart&quot;)
+library(rpart.plot)
+CARTmodel = rpart(over50k ~ ., data=Train,method=&quot;class&quot;)
+prp(CARTmodel)
+</pre></div>
+
+
+<p>As we print the tree, we can see that there are four splits. The first split uses the variable relationship. The second splits are on capitalgains and education.</p>
+<p><img alt="Photo" src="../images/RplotCARTCensus.png" style="float: middle; width: 450px;"></p>
+<p>Let's find out the out of sample accuracy on the test data set.</p>
+<div class="highlight"><pre><span></span><span class="x">cartPredict = predict(CARTmodel,newdata=Test,type=&quot;class&quot;)</span>
+<span class="x">table(Test</span><span class="p">$</span><span class="nv">over50k</span><span class="x">,cartPredict)</span>
+<span class="x">(9243+1596)/(9243+470+1482+1596) = 0.8473927</span>
+</pre></div>
+
+
+<p>This highlights a very regular phenomenon when comparing CART and logistic regression. CART often performs a little worse than logistic regression in 
+out-of-sample accuracy. However, as is the case here, the CART model is often much simpler to describe and understand.</p>
+<p>Let us now consider the ROC curve and AUC for the CART model on the test set. We will need to get predicted probabilities for the observations in the test set to
+ build the ROC curve and compute the AUC. We need to remember that we can do this by removing the type="class" argument when making predictions, and taking the 
+ second column of the resulting object.</p>
+<p>Let's Plot the ROC curve for the CART model we have estimated.  </p>
+<div class="highlight"><pre><span></span><span class="x">predictTest = predict(CARTmodel,newdata=Test)</span>
+<span class="x">pred1 = prediction(predictTest[,2],Test</span><span class="p">$</span><span class="nv">over50k</span><span class="x">)</span>
+<span class="x">pred1auc = as.numeric(performance(pred1,&quot;auc&quot;)@y.values)</span>
+<span class="x">perf=performance(pred1,&quot;tpr&quot;,&quot;fpr&quot;)</span>
+<span class="x">plot(perf)</span>
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/RplotCARTROC.png" style="float: middle; width: 450px;"></p>
+<p>We observe that compared to the logistic regression ROC curve, the CART ROC curve is less smooth than the logistic regression ROC curve.</p>
+<p>The probabilities from the CART model take only a handful of values (five, one for each end bucket/leaf of the tree); 
+the changes in the ROC curve correspond to setting the threshold to one of those values. The breakpoints of the curve correspond to the false and true positive 
+rates when the threshold is set to the five possible probability values.</p>
+<p>The area under the curve for the CART model is <strong>0.8470256</strong>.</p>
+<h1>A Random Forest Model</h1>
+<p>Before building a random forest model, we'll down-sample our training set. While some modern personal computers can build a random forest model on the entire training set, others might run out of memory when trying to train the model since random forests is much more computationally intensive than CART or Logistic Regression. For this reason, before continuing we will define a new training set to be used when building our random forest model, that contains 2000 randomly selected obervations from the original training set. Do this by running the following commands in your R console (assuming your training set is called "train"):</p>
+<p>set.seed(1)</p>
+<p>trainSmall = train[sample(nrow(train), 2000), ]</p>
+<p>Let us now build a random forest model to predict "over50k", using the dataset "trainSmall" as the data used to build the model. Let's set the seed to 1 again 
+right before building the model, and use all of the other variables in the dataset as independent variables. (If you get an error that random forest "can not 
+handle categorical predictors with more than 32 categories", re-build the model without the nativecountry variable as one of the independent variables.)</p>
+<div class="highlight"><pre><span></span><span class="x">set.seed(1)</span>
+<span class="x">trainSmall = Train[sample(nrow(Train), 2000), ]</span>
+<span class="x">library(&quot;randomForest&quot;)</span>
+<span class="x">set.seed(1)</span>
+<span class="x">censusForest = randomForest(over50k ~ . , data= trainSmall)</span>
+<span class="x">predictForest = predict(censusForest,newdata = Test)</span>
+<span class="x">table(Test</span><span class="p">$</span><span class="nv">over50k</span><span class="x">,predictForest)</span>
+</pre></div>
+
+
+<p>The accuracy of the model should be around</p>
+<div class="highlight"><pre><span></span>(9614+1050)/nrow(test) = 0.8337112
+</pre></div>
+
+
+<p>Also, note that your accuracy might be different from the one reported here, since random forest models can still differ depending on your operating system, 
+even when the random seed is set.</p>
+<p>As we know, random forest models work by building a large collection of trees. As a result, we lose some of the interpretability that comes with CART in terms 
+of seeing how predictions are made and which variables are important. However, we can still compute metrics that give us insight into which variables are 
+important.</p>
+<p>One metric that we can look at is the number of times, aggregated over all of the trees in the random forest model, 
+that a certain variable is selected for a split. To view this metric, let's run the following lines of R code .</p>
+<div class="highlight"><pre><span></span><span class="x">vu = varUsed(censusForest, count=TRUE)</span>
+<span class="x">vusorted = sort(vu, decreasing = FALSE, index.return = TRUE)</span>
+<span class="x">dotchart(vusorted</span><span class="p">$</span><span class="nv">x</span><span class="x">, names(censusForest</span><span class="p">$</span><span class="nv">forest</span><span class="p">$</span><span class="nv">xlevels</span><span class="x">[vusorted</span><span class="p">$</span><span class="nv">ix</span><span class="x">]))</span>
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/RplotVUForest1.png" style="float: middle; width: 450px;"></p>
+<p>This code produces a chart that for each variable measures the number of times that variable was selected for splitting (the value on the x-axis). 
+We can see that the varibale <strong>age</strong> is the most important in terms of the number of splits.</p>
+<p>A different metric we can look at is related to "impurity", which measures how homogenous each bucket or leaf of the tree is. 
+In each tree in the forest, whenever we select a variable and perform a split, the impurity is decreased. Therefore, one way to measure the importance of a 
+variable is to average the reduction in impurity, taken over all the times that variable is selected for splitting in all of the trees in the forest. 
+To compute this metric, run the following command in R :</p>
+<div class="highlight"><pre><span></span>varImpPlot(censusForest)
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/RplotVUForest.png" style="float: middle; width: 450px;"></p>
+<p>We can see that <strong>occupation</strong> gives a larger reduction in impurity than the other variables.</p>
+<p>We can notice that the importance as measured by the average reduction in impurity is in general different from the importance as measured by the number of times the 
+variable is selected for splitting. Although age and occupation are important variables in both metrics, the order of the variables is not the same in the two plots.</p>
+<h1>Selecting cp by Cross-Validation</h1>
+<p>We now conclude our study of this data set by looking at how CART behaves with different choices of its parameters.</p>
+<p>Let us select the cp parameter for our CART model using k-fold cross validation, with k = 10 folds. We can do this by using the train function. 
+Let's set the seed beforehand to 2. We are testing cp values from 0.002 to 0.1 in 0.002 increments, by using the following command:</p>
+<div class="highlight"><pre><span></span>cartGrid = expand.grid( .cp = seq(0.002,0.1,0.002))
+</pre></div>
+
+
+<p>Also, remember to use the entire training set "train" when building this model. The train function might take some time to run.</p>
+<p>The final output should read</p>
+<p>Accuracy was used to select the optimal model using the largest value.</p>
+<p>The final value used for the model was cp = 0.002.</p>
+<p>In other words, the best value was cp = 0.002, corresponding to the lowest cp value. If we look more closely at the accuracy at different cp values, 
+we can see that it seems to be decreasing steadily as the cp value increases. Often, the cp value needs to become quite low before the accuracy begins 
+to deteriorate.</p>
+<div class="highlight"><pre><span></span>library(caret)
+set.seed(2)
+fitControl = trainControl( method = &quot;cv&quot;, number = 10 )
+cartGrid = expand.grid( .cp = seq(0.002,0.1,0.002))
+train( over50k ~ . , data = Train, method = &quot;rpart&quot;, trControl = fitControl, tuneGrid = cartGrid )
+</pre></div>
+
+
+<p>We can create a CART model with the following command:</p>
+<div class="highlight"><pre><span></span>model = rpart(over50k~., data=train, method=&quot;class&quot;, cp=0.002)
+</pre></div>
+
+
+<p>We can make predictions on the test set using the following command (where "model" is the name of your CART model):</p>
+<div class="highlight"><pre><span></span>predictTest = predict(model, newdata=test, type=&quot;class&quot;)
+</pre></div>
+
+
+<p>Then we can generate the confusion matrix with the command</p>
+<div class="highlight"><pre><span></span><span class="x">table(test</span><span class="p">$</span><span class="nv">over50k</span><span class="x">, predictTest)</span>
+</pre></div>
+
+
+<p>The accuracy is (9178+1838)/(9178+535+1240+1838) = <strong>0.8612306</strong>.</p>
+<p>If we plot the tree with prp(model), where "model" is the name of your CART tree, we should see that there are 18 splits!</p>
+<p><img alt="Photo" src="../images/RplotCPCART.png" style="float: middle; width: 450px;"></p>
+<p>Compared to the original accuracy using the default value of cp, this new CART model is an improvement, and so we should clearly favor this new model over the 
+old one -- or should we?</p>
+<p>This highlights one important tradeoff in building predictive models. By tuning cp, we improved our accuracy by over 1%, but our tree became significantly 
+more complicated. In some applications, such an improvement in accuracy would be worth the loss in interpretability. In others, we may prefer a less accurate 
+model that is simpler to understand and describe over a more accurate -- but more complicated -- model.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="https://www.linkedin.com/in/usmanijaz">LinkedIn</a></li>
+                            <li><a href="">Email: uijaz59@gmail</a></li>
+                            <li><a href="">Phone: +49 1573 8091889</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://www.facebook.com/usman.ijaz.77">Facebook</a></li>
+                            <li><a href="https://twitter.com/uijaz59">Twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

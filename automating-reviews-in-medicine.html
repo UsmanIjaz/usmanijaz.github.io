@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>AUTOMATING REVIEWS IN MEDICINE</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">usmanijaz </a></h1>
+                <nav><ul>
+                </ul>
+                </nav>
+<div id="submenu">
+                    <ul>
+                            <li><a href="/category/data-analysis.html">Data Analysis</a></li>
+                            <li><a href="/category/linear-regression.html">Linear Regression</a></li>
+                            <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
+                            <li class="active"><a href="/category/text-analysis.html">Text Analysis</a></li>
+                            <li><a href="/category/trees.html">Trees</a></li>
+                    </ul>
+                <div>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/automating-reviews-in-medicine.html" rel="bookmark"
+           title="Permalink to AUTOMATING REVIEWS IN MEDICINE">AUTOMATING REVIEWS IN MEDICINE</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 22 June 2015</span>
+        	<span>| by <a class="url fn" href="/author/usman-ijaz-malik.html">Usman Ijaz Malik</a></span>
+	        <span>| in <a href="/category/text-analysis.html">Text Analysis</a></span>
+<span>| tags: <a href="/tag/r.html">R</a><a href="/tag/data-analysis.html">Data Analysis</a></span>
+</footer><!-- /.post-info -->      <p>The medical literature is enormous. Pubmed, a database of medical publications maintained by the U.S. National Library of Medicine, has indexed over 23 million
+ medical publications. Further, the rate of medical publication has increased over time, and now there are nearly 1 million new publications in the field each 
+ year, or more than one per minute.</p>
+<p>The large size and fast-changing nature of the medical literature has increased the need for reviews, which search databases like Pubmed for papers on a particular
+ topic and then report results from the papers found. While such reviews are often performed manually, with multiple people reviewing each search result, this is 
+ tedious and time consuming. In this problem, we will see how text analytics can be used to automate the process of information retrieval.</p>
+<p>The dataset consists of the titles (variable title) and abstracts (variable abstract) of papers retrieved in a Pubmed search. Each search result is labeled with 
+whether the paper is a clinical trial testing a drug therapy for cancer (variable trial). These labels were obtained by two people reviewing each search result 
+and accessing the actual paper if necessary, as part of a literature review of clinical trials testing drug therapies for advanced and metastatic breast cancer.</p>
+<p>Let's load clinical_trial.csv into a data frame called trials (remembering to add the argument stringsAsFactors=FALSE), and investigate the data frame with 
+summary() and str().</p>
+<p>We can use R's string functions to learn more about the titles and abstracts of the located papers. The nchar() function counts the number of characters in a 
+piece of text. Using the nchar() function on the variables in the data frame, we can get some basic information.</p>
+<p>The longest abstracy contains <strong>3708</strong> characters. <strong>112</strong> provided no search results. <strong>A decade of letrozole: FACE.</strong> is the observation with mimimum number of 
+characters in it.</p>
+<div class="highlight"><pre><span></span><span class="x">max(nchar(trials</span><span class="p">$</span><span class="nv">abstract</span><span class="x">))</span>
+<span class="x">table(nchar(trials</span><span class="p">$</span><span class="nv">abstract</span><span class="x">)==0)</span>
+<span class="x">trials</span><span class="p">$</span><span class="nv">title</span><span class="x">[which.min(nchar(trials</span><span class="p">$</span><span class="nv">title</span><span class="x">))]</span>
+</pre></div>
+
+
+<p>Because we have both title and abstract information for trials, we need to build two corpera instead of one. Name them corpusTitle and corpusAbstract.</p>
+<p>Let's create the corpus:
+    library(tm)
+    corpusTitle = Corpus(VectorSource(trials$title))
+    corpusAbstract = Corpus(VectorSource(trials$abstract))</p>
+<p>Converting text to lower letters:</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, tolower)
+corpusAbstract = tm_map(corpusAbstract, tolower)
+</pre></div>
+
+
+<p>Following lines convert corpus to a Plain Text Document</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, PlainTextDocument)
+corpusAbstract = tm_map(corpusAbstract, PlainTextDocument)
+</pre></div>
+
+
+<p>For removing punctuation:</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, removePunctuation)
+corpusAbstract = tm_map(corpusAbstract, removePunctuation)
+</pre></div>
+
+
+<p>Removing English language stopwords</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, removeWords, stopwords(&quot;english&quot;))
+corpusAbstract = tm_map(corpusAbstract, removeWords, stopwords(&quot;english&quot;))
+</pre></div>
+
+
+<p>Stemming the documents:</p>
+<div class="highlight"><pre><span></span>corpusTitle = tm_map(corpusTitle, stemDocument)
+corpusAbstract = tm_map(corpusAbstract, stemDocument)
+</pre></div>
+
+
+<p>Building document term matrices</p>
+<div class="highlight"><pre><span></span>dtmTitle =  DocumentTermMatrix(corpusTitle)
+dtmAbstract =  DocumentTermMatrix(corpusAbstract)
+</pre></div>
+
+
+<p>Let's limit dtmTitle and dtmAbstract to terms with sparseness of at most 95% (aka terms that appear in at least 5% of documents).</p>
+<div class="highlight"><pre><span></span>dtmTitle = removeSparseTerms(dtmTitle, 0.95)
+dtmAbstract = removeSparseTerms(dtmAbstract, 0.95)
+</pre></div>
+
+
+<p>Converting document erm matrices to data frames</p>
+<div class="highlight"><pre><span></span>dtmTitle = as.data.frame(as.matrix(dtmTitle))
+ncol(dtmTitle)
+
+dtmAbstract = as.data.frame(as.matrix(dtmAbstract))
+ncol(dtmAbstract)
+</pre></div>
+
+
+<p>There are <strong>31</strong> terms remained in dtmTitle and <strong>335</strong> in dtmAbstract after removing sparse terms. dtmAbstract has many more words because titles are so short, 
+a word needs to be very common to appear in 5% of titles. Because abstracts have many more words, a word can be much less common and still appear in 5% of 
+abstracts.</p>
+<p>While abstracts may have wider vocabulary, this is a secondary effect. As we saw in the previous subsection, all papers have titles, but not all have abstracts.    </p>
+<p><strong>Patient</strong> is the most frequent word stem across all the abstracts.  <br />
+    which.max(colSums(dtmAbstract))</p>
+<p>We want to combine dtmTitle and dtmAbstract into a single data frame to make predictions. 
+However, some of the variables in these data frames have the same names. To fix this issue, run the following commands:</p>
+<div class="highlight"><pre><span></span>colnames(dtmTitle) = paste0(&quot;T&quot;, colnames(dtmTitle))
+colnames(dtmAbstract) = paste0(&quot;A&quot;, colnames(dtmAbstract))
+</pre></div>
+
+
+<p>The first line pastes a T at the beginning of each column name for dtmTitle, which are the variable names. The second line does something similar for
+ the Abstract variables - it pastes an A at the beginning of each column name for dtmAbstract, which are the variable names.    </p>
+<p>Using cbind(), let's combine dtmTitle and dtmAbstract into a single data frame called dtm:</p>
+<div class="highlight"><pre><span></span><span class="x">dtm = cbind(dtmTitle, dtmAbstract)</span>
+<span class="x">dtm</span><span class="p">$</span><span class="nv">trial</span><span class="x"> = trials</span><span class="p">$</span><span class="nv">trial</span><span class="x"></span>
+<span class="x">ncol(dtm)</span>
+</pre></div>
+
+
+<p>dtm contains <strong>367</strong> variables. </p>
+<p>Now that we have prepared our data frame, it's time to split it into a training and testing set and to build regression models. Let's set the random seed to 
+144 and use the sample.split function from the caTools package to split dtm into data frames named "train" and "test", putting 70% of the data in the 
+training set.</p>
+<div class="highlight"><pre><span></span><span class="x">set.seed(144)</span>
+<span class="x">spl = sample.split(dtm</span><span class="p">$</span><span class="nv">trial</span><span class="x">, 0.7)</span>
+<span class="x">train = subset(dtm, spl == TRUE)</span>
+<span class="x">test = subset(dtm, spl == FALSE)</span>
+</pre></div>
+
+
+<p>The accuracy of the baseline model on the training set is <strong>0.5606759</strong>.
+Just as in any binary classification problem, the naive baseline always predicts the most common class. From table(train$trial), we see 730 training set results
+ were not trials, and 572 were trials. Therefore, the naive baseline always predicts a result is not a trial, yielding accuracy of 730/(730+572).</p>
+<p>Let's build a CART model called trialCART, using all the independent variables in the training set to train the model, and then plot the CART model. 
+We will just use the default parameters to build the model. Remember to add the method="class" argument, since this is a classification problem.</p>
+<p><strong>Tphase</strong> is the name of the first variable the model split on. The first split checks whether or not Tphase is less than 0.5. This can be accomplished with:</p>
+<div class="highlight"><pre><span></span>trialCART = rpart(trial~., data=train, method=&quot;class&quot;)
+prp(trialCART)
+</pre></div>
+
+
+<p><img alt="Photo" src="../images/RplotTrialTree.png" style="float: middle; width: 450px;">   </p>
+<p><strong>0.8718861</strong> is the maximum prediction on the training set. The training set predictions can be obtained and summarized with the following commands:</p>
+<div class="highlight"><pre><span></span>pred = predict(trialCART)
+predTrain = pred[,2]
+max(predTrain)
+</pre></div>
+
+
+<p>Without running the analysis, we can expect the maximum predicted probability will not differ in the testing set, Because the CART tree assigns the same 
+predicted probability to each leaf node and there are a small number of leaf nodes compared to data points.</p>
+<p>We can compare the predictions with threshold 0.5 to the true results in the training set with:</p>
+<div class="highlight"><pre><span></span><span class="x">table(train</span><span class="p">$</span><span class="nv">trial</span><span class="x">, predTrain &gt;= 0.5)</span>
+</pre></div>
+
+
+<p>We conclude that the model has training set accuracy (631+441)/(631+441+99+131)= <strong>0.8233487</strong>, sensitivity 441/(441+131)= <strong>0.770979</strong> and specificity 
+631/(631+99)=<strong>0.8643836</strong>.</p>
+<h1>Evaluating the model on the testing set</h1>
+<p>Let's evaluate the CART model on the testing set using the predict function and creating a vector of predicted probabilities predTest. The testing set 
+predictions can be obtained and compared to the true outcomes with:</p>
+<div class="highlight"><pre><span></span><span class="x">predTest = predict(trialCART, newdata=test)[,2]</span>
+<span class="x">table(test</span><span class="p">$</span><span class="nv">trial</span><span class="x">, predTest &gt;= 0.5)</span>
+</pre></div>
+
+
+<p>From this, we read that the testing set accuracy is (261+162)/(261+162+83+52)= <strong>0.7580645</strong>. The AUC can be determined using the following code:</p>
+<div class="highlight"><pre><span></span><span class="x">library(ROCR)</span>
+<span class="x">predROCR = prediction(predTest, test</span><span class="p">$</span><span class="nv">trial</span><span class="x">)</span>
+<span class="x">perfROCR = performance(predROCR, &quot;tpr&quot;, &quot;fpr&quot;)</span>
+<span class="x">plot(perfROCR, colorize=TRUE)</span>
+<span class="x">performance(predROCR, &quot;auc&quot;)@y.values</span>
+</pre></div>
+
+
+<p>AUC value is:<strong>0.8371063</strong>. </p>
+<p><img alt="Photo" src="../images/RplotTrialROCR.png" style="float: middle; width: 450px;"></p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="https://www.linkedin.com/in/usmanijaz">LinkedIn</a></li>
+                            <li><a href="">Email: uijaz59@gmail</a></li>
+                            <li><a href="">Phone: +49 1573 8091889</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://www.facebook.com/usman.ijaz.77">Facebook</a></li>
+                            <li><a href="https://twitter.com/uijaz59">Twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
