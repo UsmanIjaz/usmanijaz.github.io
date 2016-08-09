@@ -14,17 +14,13 @@
         <header id="banner" class="body">
                 <h1><a href="/">usmanijaz </a></h1>
                 <nav><ul>
+                    <li><a href="/category/data-analysis.html">Data Analysis</a></li>
+                    <li><a href="/category/linear-regression.html">Linear Regression</a></li>
+                    <li class="active"><a href="/category/logistic-regression.html">Logistic Regression</a></li>
+                    <li><a href="/category/text-analysis.html">Text Analysis</a></li>
+                    <li><a href="/category/trees.html">Trees</a></li>
                 </ul>
                 </nav>
-<div id="submenu">
-                    <ul>
-                            <li><a href="/category/data-analysis.html">Data Analysis</a></li>
-                            <li><a href="/category/linear-regression.html">Linear Regression</a></li>
-                            <li class="active"><a href="/category/logistic-regression.html">Logistic Regression</a></li>
-                            <li><a href="/category/text-analysis.html">Text Analysis</a></li>
-                            <li><a href="/category/trees.html">Trees</a></li>
-                    </ul>
-                <div>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
@@ -45,7 +41,8 @@ They are still considered to be serving their sentence while on parole, and they
 <p>Parole boards are charged with identifying which inmates are good candidates for release on parole. They seek to release inmates who will not commit additional crimes after release. 
 In this problem, we will build and validate a model that predicts if an inmate will violate the terms of his or her parole. Such a model could be useful to a parole board when deciding
  to approve or deny an application for parole.</p>
-<p>For this prediction task, we will use data from the United States 2004 National Corrections Reporting Program, a nationwide census of parole releases that occurred during 2004.
+<p>For this prediction task, we will use data <a href="https://dl.dropboxusercontent.com/u/95579925/LoR/parole.csv">parole.csv</a>
+from the United States 2004 National Corrections Reporting Program, a nationwide census of parole releases that occurred during 2004.
  We limited our focus to parolees who served no more than 6 months in prison and whose maximum sentence for all charges did not exceed 18 months. The dataset contains all such parolees who either successfully completed their term of parole during 2004 or those who violated the terms of their parole during that year. The dataset contains the following variables:</p>
 <ul>
 <li><strong>male</strong>: 1 if the parolee is male, 0 if female</li>

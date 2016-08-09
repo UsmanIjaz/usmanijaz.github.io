@@ -14,17 +14,13 @@
         <header id="banner" class="body">
                 <h1><a href="/">usmanijaz </a></h1>
                 <nav><ul>
+                    <li class="active"><a href="/category/data-analysis.html">Data Analysis</a></li>
+                    <li><a href="/category/linear-regression.html">Linear Regression</a></li>
+                    <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
+                    <li><a href="/category/text-analysis.html">Text Analysis</a></li>
+                    <li><a href="/category/trees.html">Trees</a></li>
                 </ul>
                 </nav>
-<div id="submenu">
-                    <ul>
-                            <li class="active"><a href="/category/data-analysis.html">Data Analysis</a></li>
-                            <li><a href="/category/linear-regression.html">Linear Regression</a></li>
-                            <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
-                            <li><a href="/category/text-analysis.html">Text Analysis</a></li>
-                            <li><a href="/category/trees.html">Trees</a></li>
-                    </ul>
-                <div>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
@@ -45,19 +41,27 @@ The largest stock market in the world is the New York Stock Exchange (NYSE), loc
 About 2,800 companies are listed on the NSYE. 
 Today, we'll look at the monthly stock prices of five of these companies: IBM, General Electric (GE), Procter and Gamble, Coca Cola, and Boeing. 
 The data used in this problem comes from Infochimps.</p>
-<p>Download and read the following files into R, using the read.csv function: IBMStock.csv, GEStock.csv, ProcterGambleStock.csv, CocaColaStock.csv, and BoeingStock.csv.</p>
+<p>Download and read the following files into R, using the read.csv function: 
+<a href="https://dl.dropboxusercontent.com/u/95579925/IBMStock.csv">IBMStock.csv</a>,
+ <a href="https://dl.dropboxusercontent.com/u/95579925/GEStock.csv">GEStock.csv</a>, 
+ <a href="https://dl.dropboxusercontent.com/u/95579925/ProcterGambleStock.csv">ProcterGambleStock.csv</a>, 
+ <a href="https://dl.dropboxusercontent.com/u/95579925/CocaColaStock.csv">CocaColaStock.csv</a>, and 
+ <a href="https://dl.dropboxusercontent.com/u/95579925/BoeingStock.csv">BoeingStock.csv</a>.</p>
 <p>We will call the data frames "IBM", "GE", "ProcterGamble", "CocaCola", and "Boeing", respectively. Each data frame has two variables, described as follows:</p>
 <ul>
 <li><strong>Date</strong>: the date of the stock price, always given as the first of the month.</li>
 <li><strong>StockPrice</strong>: the average stock price of the company in the given month.</li>
 </ul>
 <p>We'll take a look at how the stock dynamics of these companies have changed over time.</p>
-<p>First we read the data from the csv files.
-    IBM = read.csv("IBMStock.csv")
-    GE = read.csv("GEStock.csv")
-    CocaCola = read.csv("CocaColaStock.csv")
-    ProcterGamble = read.csv("ProcterGambleStock.csv")
-    Boeing = read.csv("BoeingStock.csv")</p>
+<p>First we read the data from the csv files.</p>
+<div class="highlight"><pre><span></span>IBM = read.csv(&quot;IBMStock.csv&quot;)
+GE = read.csv(&quot;GEStock.csv&quot;)
+CocaCola = read.csv(&quot;CocaColaStock.csv&quot;)
+ProcterGamble = read.csv(&quot;ProcterGambleStock.csv&quot;)
+Boeing = read.csv(&quot;BoeingStock.csv&quot;)
+</pre></div>
+
+
 <p>Before working with these data sets, we need to convert the dates into a format that R can understand.
 Take a look at the structure of one of the datasets using the str function. Right now, the date variable is stored as a factor.
 We can convert this to a "Date" object in R by using the following five commands (one for each data set):</p>

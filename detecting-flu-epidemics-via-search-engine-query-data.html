@@ -14,17 +14,13 @@
         <header id="banner" class="body">
                 <h1><a href="/">usmanijaz </a></h1>
                 <nav><ul>
+                    <li><a href="/category/data-analysis.html">Data Analysis</a></li>
+                    <li class="active"><a href="/category/linear-regression.html">Linear Regression</a></li>
+                    <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
+                    <li><a href="/category/text-analysis.html">Text Analysis</a></li>
+                    <li><a href="/category/trees.html">Trees</a></li>
                 </ul>
                 </nav>
-<div id="submenu">
-                    <ul>
-                            <li><a href="/category/data-analysis.html">Data Analysis</a></li>
-                            <li class="active"><a href="/category/linear-regression.html">Linear Regression</a></li>
-                            <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
-                            <li><a href="/category/text-analysis.html">Text Analysis</a></li>
-                            <li><a href="/category/trees.html">Trees</a></li>
-                    </ul>
-                <div>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
@@ -50,7 +46,7 @@ including Influenza-like Illness (ILI) physician visits. Reporting national and 
 ILI Data - The CDC publishes on its website the official regional and state-level percentage of patient visits to healthcare providers for ILI purposes on a weekly basis.
 Google Search Queries - Google Trends allows public retrieval of weekly counts for every query searched by users around the world. For each location, the counts are normalized by dividing 
 the count for each query in a particular week by the total number of online search queries submitted in that location during the week. Then, the values are adjusted to be between 0 and 1.</p>
-<p>The csv file FluTrain.csv aggregates this data from January 1, 2004 until December 31, 2011 as follows:</p>
+<p>The csv file <a href="https://dl.dropboxusercontent.com/u/95579925/LiR/FluTrain.csv">FluTrain.csv</a> aggregates this data from January 1, 2004 until December 31, 2011 as follows:</p>
 <ul>
 <li>
 <p><strong>"Week"</strong> - The range of dates represented by this observation, in year/month/day format.</p>
@@ -111,7 +107,7 @@ Based on our understanding of the data from the previous subproblem, this model 
 
 
 <p>It appears that Correlation^2 is equal to the R-squared value. </p>
-<p>The csv file FluTest.csv provides the 2012 weekly data of the ILI-related search queries and the observed weekly percentage of ILI-related physician visits. 
+<p>The csv file <a href="https://dl.dropboxusercontent.com/u/95579925/LiR/FluTest.csv">FluTest.csv</a> provides the 2012 weekly data of the ILI-related search queries and the observed weekly percentage of ILI-related physician visits. 
 Load this data into a data frame called FluTest.</p>
 <p>Normally, we would obtain test-set predictions from the model FluTrend1 using the code</p>
 <div class="highlight"><pre><span></span>PredTest1 = predict(FluTrend1, newdata=FluTest)

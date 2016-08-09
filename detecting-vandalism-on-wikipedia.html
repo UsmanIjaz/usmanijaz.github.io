@@ -14,17 +14,13 @@
         <header id="banner" class="body">
                 <h1><a href="/">usmanijaz </a></h1>
                 <nav><ul>
+                    <li><a href="/category/data-analysis.html">Data Analysis</a></li>
+                    <li><a href="/category/linear-regression.html">Linear Regression</a></li>
+                    <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
+                    <li class="active"><a href="/category/text-analysis.html">Text Analysis</a></li>
+                    <li><a href="/category/trees.html">Trees</a></li>
                 </ul>
                 </nav>
-<div id="submenu">
-                    <ul>
-                            <li><a href="/category/data-analysis.html">Data Analysis</a></li>
-                            <li><a href="/category/linear-regression.html">Linear Regression</a></li>
-                            <li><a href="/category/logistic-regression.html">Logistic Regression</a></li>
-                            <li class="active"><a href="/category/text-analysis.html">Text Analysis</a></li>
-                            <li><a href="/category/trees.html">Trees</a></li>
-                    </ul>
-                <div>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
@@ -66,7 +62,7 @@ The columns in the dataset are:</p>
 Notice the repeated use of unique. The data we have available is not the traditional bag of words - rather it is the set of words that were removed or added. 
 For example, if a word was removed multiple times in a revision it will only appear one time in the "Removed" column.</li>
 </ul>
-<p>Load the data wiki.csv with the option stringsAsFactors=FALSE, calling the data frame "wiki". Convert the "Vandal" column to a factor using the command wiki$Vandal = as.factor(wiki$Vandal).</p>
+<p>Load the data <a href="https://dl.dropboxusercontent.com/u/95579925/TA/wiki.csv">wiki.csv</a> with the option stringsAsFactors=FALSE, calling the data frame "wiki". Convert the "Vandal" column to a factor using the command wiki$Vandal = as.factor(wiki$Vandal).</p>
 <p>We can load the data using the command:</p>
 <div class="highlight"><pre><span></span>wiki = read.csv(&quot;wiki.csv&quot;, stringsAsFactors=FALSE)
 </pre></div>
